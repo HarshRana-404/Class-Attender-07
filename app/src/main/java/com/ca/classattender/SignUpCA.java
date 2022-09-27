@@ -1,5 +1,6 @@
 package com.ca.classattender;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -12,12 +13,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+
 public class SignUpCA extends AppCompatActivity {
 
-    EditText etFullName, etEnr, etPass, etConfirmPass;
+    EditText etFullName, etEnr, etEmail, etPass, etConfirmPass;
     Spinner spDepartment;
     TextView tvLogIn;
     Button btnSignUp;
+    FirebaseAuth fbAuth = FirebaseAuth.getInstance();
+    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
+    String dept;
+    HashMap<String, String> hmDepartments = new HashMap<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -29,9 +43,17 @@ public class SignUpCA extends AppCompatActivity {
         btnSignUp = findViewById(R.id.btn_sign_up);
         etFullName = findViewById(R.id.et_name);
         etEnr = findViewById(R.id.et_enr);
+        etEmail = findViewById(R.id.et_email);
         spDepartment = findViewById(R.id.sp_department);
         etPass = findViewById(R.id.et_pass);
         etConfirmPass = findViewById(R.id.et_confirm_pass);
+
+        hmDepartments.put("Information Technology", "it");
+        hmDepartments.put("Computer Engineering", "ce");
+        hmDepartments.put("Biomedical Engineering", "bm");
+        hmDepartments.put("Electrical Communication Engineering", "ece");
+        hmDepartments.put("Mechanical Engineering", "mce");
+        hmDepartments.put("Metallurgy Engineering", "mte");
 
         tvLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,16 +62,16 @@ public class SignUpCA extends AppCompatActivity {
             }
         });
 
-
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String dept = spDepartment.getSelectedItem().toString();
+                dept = spDepartment.getSelectedItem().toString();
                 if (etFullName.getText().toString().isEmpty()){
                     etFullName.setError("Please fill this field!");
                 }else if (etEnr.getText().toString().isEmpty()){
                     etEnr.setError("Please fill this field!");
+                }else if (etEmail.getText().toString().isEmpty()){
+                    etEmail.setError("Please fill this field!");
                 }else if (dept.toLowerCase().equals("select department")){
                     Toast.makeText(SignUpCA.this, dept, Toast.LENGTH_SHORT).show();
                 }else if (etPass.getText().toString().isEmpty()){
@@ -59,8 +81,27 @@ public class SignUpCA extends AppCompatActivity {
                 }else if (!etPass.getText().toString().equals(etConfirmPass.getText().toString())){
                     etConfirmPass.setError("Password mismatch!");
                 }else {
-//                   TODO SIGNUP CODE OF FIREBASE
+                    registerUser();
+                }
+            }
+        });
+    }
+
+    private void registerUser() {
+        String usrName = etFullName.getText().toString();
+        String usrEnr = etEnr.getText().toString();
+        String usrEmail = etEmail.getText().toString();
+        String usrDept = hmDepartments.get(dept);
+        String usrPass = etConfirmPass.getText().toString();
+        fbAuth.createUserWithEmailAndPassword(usrEmail, usrPass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    dbRef.child("class_attender").child("students").child(usrDept).child(usrEnr).setValue(usrName);
+                    Toast.makeText(SignUpCA.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignUpCA.this, LoginCA.class));
+                }else{
+                    Toast.makeText(SignUpCA.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

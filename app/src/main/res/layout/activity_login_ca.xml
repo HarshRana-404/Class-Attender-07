@@ -25,12 +25,11 @@
         android:text="Log In"/>
 
     <EditText
-        android:id="@+id/et_enr"
         style="@style/MyEditText"
-        android:drawableStart="@drawable/enrollment_et_icon"
-        android:hint="Enrollment"
-        android:inputType="number"
-        />
+        android:id="@+id/et_email"
+        android:drawableStart="@drawable/email_et_icon"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/et_pass"
