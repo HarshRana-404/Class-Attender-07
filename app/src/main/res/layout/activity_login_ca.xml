@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:gravity="center_horizontal"
+    tools:context=".LoginCA">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/login_logo"
+        android:contentDescription="Login illustration" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35sp"
+        android:textColor="@color/theme_1"
+        android:layout_marginTop="-10dp"
+        android:textStyle="bold"
+        android:text="Log In"/>
+
+    <EditText
+        android:id="@+id/et_enr"
+        style="@style/MyEditText"
+        android:drawableStart="@drawable/enrollment_et_icon"
+        android:hint="Enrollment"
+        android:inputType="number"
+        />
+
+    <EditText
+        android:id="@+id/et_pass"
+        style="@style/MyEditText"
+        android:drawableStart="@drawable/password_et_icon"
+        android:inputType="textPassword"
+        android:hint="Password" />
+
+    <Button
+        android:id="@+id/btn_log_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_marginTop="50dp"
+        android:paddingHorizontal="50dp"
+        android:background="@drawable/custom_btn"
+        android:elevation="5dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#404040"
+            android:textStyle="bold"
+            android:text="Not a user?"/>
+
+        <TextView
+            android:id="@+id/tv_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/theme_1"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:text="Sign up"/>
+
+    </LinearLayout>
+
+</LinearLayout>

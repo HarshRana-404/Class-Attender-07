@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_focused="false">
+        <shape
+            android:shape="rectangle">
+            <corners android:radius="30dp"/>
+            <stroke android:color="@color/white"/>
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+
+    <item android:state_focused="true">
+        <shape
+            android:shape="rectangle">
+            <corners android:radius="20dp"/>
+            <stroke android:color="@color/theme_1"/>
+        </shape>
+    </item>
+
+</layer-list>
