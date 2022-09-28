@@ -18,6 +18,7 @@
             android:layout_width="175dp"
             android:layout_height="175dp"
             android:layout_marginTop="-15dp"
+            android:contentDescription="Registration illustraion"
             android:src="@drawable/registration_logo"/>
 
         <TextView
@@ -55,12 +56,12 @@
             android:id="@+id/sp_department"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/custom_edittext"
+            android:background="@drawable/custom_spinner"
             android:elevation="10dp"
-            android:padding="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="5dp"
-            android:entries="@array/departments" />
+            android:entries="@array/departments"
+            android:paddingLeft="35dp"/>
 
         <EditText
             android:id="@+id/et_pass"
