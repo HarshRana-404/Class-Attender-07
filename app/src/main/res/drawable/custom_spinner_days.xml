@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item android:state_focused="false">
+                <shape
+                    android:shape="rectangle">
+                    <corners android:radius="30dp"/>
+                    <stroke android:color="@color/white"/>
+                    <solid android:color="@color/white"/>
+                </shape>
+            </item>
+
+            <item android:state_focused="true">
+                <shape
+                    android:shape="rectangle">
+                    <corners android:radius="20dp"/>
+                    <stroke android:color="@color/theme_1"/>
+                </shape>
+            </item>
+
+            <item
+                android:width="35dp"
+                android:height="35dp"
+                android:right="7dp"
+                android:drawable="@drawable/ic_down_arrow"
+                android:gravity="end|center_vertical"/>
+
+            <item
+                android:width="35dp"
+                android:height="35dp"
+                android:left="7dp"
+                android:drawable="@drawable/ic_days"
+                android:gravity="start|center_vertical"/>
+        </layer-list>
+    </item>
+</selector>
