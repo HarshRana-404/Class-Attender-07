@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Class Attender</string>
 
+    <string-array name="sel_semester">
+        <item>Select Semester</item>
+    </string-array>
+    <string-array name="sel_subject">
+        <item>Select Subject</item>
+    </string-array>
+
     <string-array name="departments">
         <item>Select Department</item>
         <item>Information Technology</item>
@@ -9,5 +16,35 @@
         <item>Electrical Communication Engineering</item>
         <item>Mechanical Engineering</item>
         <item>Metallurgy Engineering</item>
+    </string-array>
+    <string-array name="semesters">
+        <item>Select Semester</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string-array name="it_sem_3">
+        <item>Select Subject</item>
+        <item>ETC</item>
+        <item>DF</item>
+        <item>DBMS</item>
+        <item>IC</item>
+        <item>DE</item>
+        <item>PAS</item>
+        <item>DS</item>
+    </string-array>
+    <string-array name="it_sem_4">
+        <item>Select Subject</item>
+        <item>COA</item>
+        <item>DI</item>
+        <item>DM</item>
+        <item>OOP</item>
+        <item>OSV</item>
+        <item>PEM</item>
     </string-array>
 </resources>

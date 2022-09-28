@@ -72,8 +72,8 @@ public class SignUpCA extends AppCompatActivity {
                     etEnr.setError("Please fill this field!");
                 }else if (etEmail.getText().toString().isEmpty()){
                     etEmail.setError("Please fill this field!");
-                }else if (dept.toLowerCase().equals("select department")){
-                    Toast.makeText(SignUpCA.this, dept, Toast.LENGTH_SHORT).show();
+                }else if (!dept.equals("Information Technology")){
+                    Toast.makeText(SignUpCA.this, "Only I.T. department is available now!", Toast.LENGTH_SHORT).show();
                 }else if (etPass.getText().toString().isEmpty()){
                     etPass.setError("Please fill this field!");
                 }else if (etConfirmPass.getText().toString().isEmpty()){
@@ -97,9 +97,16 @@ public class SignUpCA extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    dbRef.child("class_attender").child("students").child(usrDept).child(usrEnr).setValue(usrName);
-                    Toast.makeText(SignUpCA.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignUpCA.this, LoginCA.class));
+                    try {
+                        String[] strEmail = usrEmail.split("@");
+                        dbRef.child("class_attender").child("students").child(usrDept).child(strEmail[0]).child("s_enr").setValue(usrEnr);
+                        dbRef.child("class_attender").child("students").child(usrDept).child(strEmail[0]).child("s_name").setValue(usrName);
+                        dbRef.child("class_attender").child("students").child(usrDept).child(strEmail[0]).child("s_dept").setValue(usrDept);
+                        Toast.makeText(SignUpCA.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignUpCA.this, LoginCA.class));
+                    } catch (Exception e) {
+                        Toast.makeText(SignUpCA.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(SignUpCA.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
                 }
