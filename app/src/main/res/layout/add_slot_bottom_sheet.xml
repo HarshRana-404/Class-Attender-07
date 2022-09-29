@@ -18,8 +18,7 @@
             android:id="@+id/img_close_bs"
             android:src="@drawable/ic_close"
             android:layout_alignParentLeft="true"
-            android:backgroundTint="@color/white"
-            />
+            android:backgroundTint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,8 +35,7 @@
             android:id="@+id/img_add_slot"
             android:src="@drawable/ic_done"
             android:layout_alignParentRight="true"
-            android:backgroundTint="@color/white"
-            />
+            android:backgroundTint="@color/white" />
 
     </RelativeLayout>
 
@@ -50,8 +48,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="5dp"
         android:entries="@array/days"
-        android:paddingLeft="40dp"
-        />
+        android:paddingLeft="40dp" />
 
     <Spinner
         android:id="@+id/sp_subject"
@@ -62,16 +59,15 @@
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="5dp"
         android:entries="@array/it_sem_3"
-        android:layout_marginBottom="20dp"
-        android:paddingLeft="40dp"
-        />
+        android:paddingLeft="40dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="100dp"
-        >
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="100dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -80,20 +76,27 @@
             android:background="@drawable/custom_btn"
             android:id="@+id/btn_add_time"
             android:drawableLeft="@drawable/ic_time"
-            android:gravity="center_vertical"
-            />
+            android:gravity="center_vertical" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:id="@+id/tv_show_time"
             android:text="Time not selected!"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:layout_marginLeft="10dp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/red"
+        android:textSize="17sp" />
 
 </LinearLayout>

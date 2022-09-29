@@ -13,7 +13,8 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-<!--    Thematic Edit Text-->
+
+    <!-- Thematic Edit Text-->
     <style name="MyEditText" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -26,5 +27,22 @@
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:layout_marginHorizontal" tools:targetApi="o">5dp</item>
+    </style>
+
+    <!-- Days TextView-->
+    <style name="DaysTextView" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <!-- My RecyclerView-->
+    <style name="MyRecyclerView" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
     </style>
 </resources>

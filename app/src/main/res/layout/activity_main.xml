@@ -4,9 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical"
-    >
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class Attender"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Monday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_monday_slots"
+            style="@style/MyRecyclerView"/>
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Tuesday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tuesday_slots"
+            style="@style/MyRecyclerView"/>
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Wednesday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_wednesday_slots"
+            style="@style/MyRecyclerView"/>
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Thursday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_thursday_slots"
+            style="@style/MyRecyclerView"/>
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Friday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_friday_slots"
+            style="@style/MyRecyclerView"/>
+
+        <TextView
+            style="@style/DaysTextView"
+            android:text="Saturday" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_saturday_slots"
+            style="@style/MyRecyclerView"/>
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
