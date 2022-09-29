@@ -101,8 +101,27 @@ public class LoginCA extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrName = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_name").getValue().toString();
+                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrEnr = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_enr").getValue().toString();
+                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrDept = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_dept").getValue().toString();
+                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
@@ -119,7 +138,12 @@ public class LoginCA extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(fbAuth.getCurrentUser() != null){
-            startActivity(new Intent(LoginCA.this, MainActivity.class));
+            usrEmail = fbAuth.getCurrentUser().getEmail();
+            if(usrEmail.endsWith("@classattender.com")){
+                startActivity(new Intent(LoginCA.this, MainActivity.class));
+            }else{
+                startActivity(new Intent(LoginCA.this, StudentCA.class));
+            }
             finish();
         }
     }

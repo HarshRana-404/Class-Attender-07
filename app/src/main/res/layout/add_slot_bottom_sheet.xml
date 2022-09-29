@@ -42,7 +42,7 @@
     </RelativeLayout>
 
     <Spinner
-        android:id="@+id/sp_department"
+        android:id="@+id/sp_day"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/custom_spinner_days"
@@ -54,14 +54,14 @@
         />
 
     <Spinner
-        android:id="@+id/sp_semester"
+        android:id="@+id/sp_subject"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/custom_spinner_subject"
         android:elevation="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="5dp"
-        android:entries="@array/sel_subject"
+        android:entries="@array/it_sem_3"
         android:layout_marginBottom="20dp"
         android:paddingLeft="40dp"
         />
@@ -86,10 +86,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_show_time"
             android:text="Time not selected!"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:layout_marginLeft="10dp"
+            android:textStyle="bold"
             />
 
     </LinearLayout>

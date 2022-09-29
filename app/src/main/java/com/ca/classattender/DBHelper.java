@@ -1,6 +1,7 @@
 package com.ca.classattender;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -19,6 +20,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void storeStudentDetails(String ema, String enr, String nm, String dpt){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("INSERT INTO std_details VALUES('"+ema+"', '"+enr+"', '"+nm+"', '"+dpt+"')");
+    }
+
+    public Cursor getStudentDetails(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor csr;
+        csr = db.rawQuery("SELECT * FROM std_details", null);
+        return csr;
     }
 
     @Override
