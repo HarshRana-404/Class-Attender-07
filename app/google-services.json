@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "360962446713",
+    "project_id": "class-attender-07",
+    "storage_bucket": "class-attender-07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360962446713:android:e6427c873bba6d6a6acba8",
+        "android_client_info": {
+          "package_name": "com.ca.classattender"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360962446713-t6edkpeug8hh88n97rl8ms6jloj82a40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtjPLFjwIp3vaXX60EQT8yhlpFH20mqg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360962446713-t6edkpeug8hh88n97rl8ms6jloj82a40.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
