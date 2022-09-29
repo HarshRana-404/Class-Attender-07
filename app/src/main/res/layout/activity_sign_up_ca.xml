@@ -18,7 +18,7 @@
             android:layout_width="175dp"
             android:layout_height="175dp"
             android:layout_marginTop="-15dp"
-            android:contentDescription="Registration illustraion"
+            android:contentDescription="Registration illustration"
             android:src="@drawable/registration_logo"/>
 
         <TextView

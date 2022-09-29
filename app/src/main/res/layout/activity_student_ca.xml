@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StudentCA"
+    android:gravity="center_horizontal"
+    android:padding="10dp"
+    android:orientation="vertical"
+    >
+
+    <EditText
+        android:id="@+id/et_otp"
+        style="@style/MyEditText"
+        android:drawableStart="@drawable/password_et_icon"
+        android:inputType="number"
+        android:hint="OTP" />
+
+    <Button
+        android:id="@+id/btn_verify_otp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VERIFY"
+        android:layout_marginTop="20dp"
+        android:paddingHorizontal="50dp"
+        android:background="@drawable/custom_btn"
+        android:elevation="5dp"
+        android:textStyle="bold" />
+
+</LinearLayout>
