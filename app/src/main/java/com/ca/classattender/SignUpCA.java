@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class SignUpCA extends AppCompatActivity {
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
     String dept;
     HashMap<String, String> hmDepartments = new HashMap<>();
+    DBHelper dbh = new DBHelper(SignUpCA.this , null, null, 1);
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -103,9 +105,11 @@ public class SignUpCA extends AppCompatActivity {
                         dbRef.child("class_attender").child("students").child(usrDept).child(strEmail[0]).child("s_name").setValue(usrName);
                         dbRef.child("class_attender").child("students").child(usrDept).child(strEmail[0]).child("s_dept").setValue(usrDept);
                         Toast.makeText(SignUpCA.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                        dbh.writeUserRecentRegister(1);
                         startActivity(new Intent(SignUpCA.this, LoginCA.class));
+                        finish();
                     } catch (Exception e) {
-                        Toast.makeText(SignUpCA.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        Log.d("bhak", e.toString());
                     }
                 }else{
                     Toast.makeText(SignUpCA.this, "Registration Failed!", Toast.LENGTH_SHORT).show();

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -101,7 +102,9 @@ public class LoginCA extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrName = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_name").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if(!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") &&! usrDept.equals("")){
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
@@ -111,7 +114,9 @@ public class LoginCA extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrEnr = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_enr").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if(!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") && !usrDept.equals("")){
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
@@ -121,13 +126,13 @@ public class LoginCA extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrDept = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_dept").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if(!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") &&! usrDept.equals("")){
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
             });
-
-            dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
 
         } catch (Exception e) {
             Toast.makeText(this, e+"", Toast.LENGTH_SHORT).show();
@@ -141,10 +146,15 @@ public class LoginCA extends AppCompatActivity {
             usrEmail = fbAuth.getCurrentUser().getEmail();
             if(usrEmail.endsWith("@classattender.com")){
                 startActivity(new Intent(LoginCA.this, MainActivity.class));
+                finish();
             }else{
-                startActivity(new Intent(LoginCA.this, StudentCA.class));
+                if(!dbh.isUserRecentRegistered()){
+                    startActivity(new Intent(LoginCA.this, StudentCA.class));
+                    finish();
+                }else{
+                    dbh.writeUserRecentRegister(0);
+                }
             }
-            finish();
         }
     }
 }
