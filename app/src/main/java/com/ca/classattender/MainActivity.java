@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -32,12 +35,14 @@ public class MainActivity extends AppCompatActivity {
     TextView tvShowTime, tvError;
     Spinner spDay, spSubject;
     int hr, min;
-    String strTime="";
+    String strTime="", subTeacherShortName="";
 //    RecyclerView rvMondaySlots, rvTuesdaySlots, rvWednesdaySlots, rvThursdaySlots, rvFridaySlots, rvSaturdaySlots;
     RecyclerView rvDaysSlots[] = new RecyclerView[6];
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
     ArrayList<Integer> slotTemplateImg = new ArrayList<>();
     SlotRvAdapter slotRvAdapters[] = new SlotRvAdapter[6];
+    FirebaseAuth fbAuth = FirebaseAuth.getInstance();
+    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -59,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         slotTemplateImg.add(R.drawable.slot_template_4);
         slotTemplateImg.add(R.drawable.slot_template_5);
         slotTemplateImg.add(R.drawable.slot_template_6);
+
+        getSubjectTeacherShortName();
 
         try {
             for (int i=0; i<6; i++){
@@ -113,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, 3130004, "MNP"));
                             slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
                             bsAddSlot.dismiss();
+
+                            Toast.makeText(MainActivity.this, dayOfWeek+", "+sub+", "+strTime+", "+subTeacherShortName, Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 });
@@ -142,5 +152,25 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    public void getSubjectTeacherShortName(){
+        String tName = fbAuth.getCurrentUser().getEmail().toString();
+        if(tName.startsWith("mahendra")){
+            subTeacherShortName = "mnp";
+        }else if(tName.startsWith("suresh")){
+            subTeacherShortName = "sbp";
+        }else if(tName.startsWith("prashant")){
+            subTeacherShortName = "pc";
+        }else if(tName.startsWith("sashi")){
+            subTeacherShortName = "svr";
+        }else if(tName.startsWith("aswin")){
+            subTeacherShortName = "akr";
+        }else if(tName.startsWith("vashishtha")){
+            subTeacherShortName = "vjp";
+        }else if(tName.startsWith("anamika")){
+            subTeacherShortName = "am";
+        }else if(tName.startsWith("ruturaj")){
+            subTeacherShortName = "rpr";
+        }
     }
 }
