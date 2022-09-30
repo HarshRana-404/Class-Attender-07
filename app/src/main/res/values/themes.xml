@@ -45,4 +45,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">5dp</item>
     </style>
+
+    <!-- TimePickerDialog Theme -->
+    <style name="MyTimePickerDialog" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/theme_1</item>
+        <item name="colorPrimaryDark">@color/theme_1</item>
+        <item name="colorAccent">@color/theme_1</item>
+    </style>
 </resources>
