@@ -5,8 +5,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:padding="10dp"
-    android:id="@+id/bs_root_layout"
-    >
+    android:id="@+id/bs_root_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,8 +45,8 @@
         android:background="@drawable/custom_spinner_days"
         android:elevation="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="5dp"
         android:entries="@array/days"
+        android:layout_marginHorizontal="5dp"
         android:paddingLeft="40dp" />
 
     <Spinner

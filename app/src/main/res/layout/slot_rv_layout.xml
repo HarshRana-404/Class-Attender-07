@@ -9,6 +9,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="140dp"
         android:layout_height="210dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
         app:cardElevation="8dp">
 
         <RelativeLayout

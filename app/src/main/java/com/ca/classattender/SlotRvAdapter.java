@@ -45,7 +45,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
             Animation slotItemViewAnim = AnimationUtils.loadAnimation(context, android.R.anim.bounce_interpolator);
             holder.itemView.startAnimation(slotItemViewAnim);
         } catch (Exception e) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

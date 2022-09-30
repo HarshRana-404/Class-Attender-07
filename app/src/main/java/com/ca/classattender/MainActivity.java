@@ -9,6 +9,8 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, 3130004, "MNP"));
                             slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
+                            bsAddSlot.dismiss();
                         }
                     }
                 });
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         TimePickerDialog tpd = new TimePickerDialog(
-                                MainActivity.this, android.R.style.Theme_Material_Dialog_MinWidth,
+                                MainActivity.this, R.style.MyTimePickerDialog,
                                 new TimePickerDialog.OnTimeSetListener() {
                                     @Override
                                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
