@@ -34,7 +34,9 @@
             android:id="@+id/et_name"
             style="@style/MyEditText"
             android:drawableStart="@drawable/enrollment_et_icon"
-            android:hint="Full name" />
+            android:hint="Full name"
+            android:text="Harsh"
+            />
 
         <EditText
             style="@style/MyEditText"
@@ -43,14 +45,17 @@
             android:hint="Enrollment"
             android:inputType="number"
             android:maxLength="12"
-        />
+            android:text="123"
+            />
 
         <EditText
             style="@style/MyEditText"
             android:id="@+id/et_email"
             android:drawableStart="@drawable/email_et_icon"
             android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:text="harshrana2004@gmail.com"
+            />
 
         <Spinner
             android:id="@+id/sp_department"
@@ -68,14 +73,18 @@
             style="@style/MyEditText"
             android:drawableStart="@drawable/password_et_icon"
             android:inputType="textPassword"
-            android:hint="Password" />
+            android:hint="Password"
+            android:text="harsh123"
+            />
 
         <EditText
             android:id="@+id/et_confirm_pass"
             style="@style/MyEditText"
             android:drawableStart="@drawable/password_et_icon"
             android:inputType="textPassword"
-            android:hint="Confirm Password" />
+            android:hint="Confirm Password"
+            android:text="harsh123"
+            />
 
         <Button
             android:id="@+id/btn_sign_up"

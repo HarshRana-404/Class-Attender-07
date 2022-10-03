@@ -1,10 +1,16 @@
 package com.ca.classattender;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -35,7 +41,8 @@ public class LoginCA extends AppCompatActivity {
     FirebaseAuth fbAuth = FirebaseAuth.getInstance();
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
     DBHelper dbh = new DBHelper(this, null, null, 1);
-    String usrEmail="", usrName="", usrEnr="", usrDept="";
+    String usrEmail = "", usrName = "", usrEnr = "", usrDept = "";
+    Boolean checkedInternet = false;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -60,11 +67,11 @@ public class LoginCA extends AppCompatActivity {
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etEmail.getText().toString().isEmpty()){
+                if (etEmail.getText().toString().isEmpty()) {
                     etEmail.setError("Please fill this field!");
-                }else if (etPass.getText().toString().isEmpty()){
+                } else if (etPass.getText().toString().isEmpty()) {
                     etPass.setError("Please fill this field!");
-                }else {
+                } else {
                     loginUser();
                 }
             }
@@ -77,15 +84,15 @@ public class LoginCA extends AppCompatActivity {
         fbAuth.signInWithEmailAndPassword(usrEmail, usrPass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Toast.makeText(LoginCA.this, "Log In Successful!", Toast.LENGTH_SHORT).show();
-                    if(usrEmail.endsWith("@classattender.com")){
+                    if (usrEmail.endsWith("@classattender.com")) {
                         startActivity(new Intent(LoginCA.this, MainActivity.class));
-                    }else{
+                    } else {
                         storeInSqlite(usrEmail);
                         startActivity(new Intent(LoginCA.this, StudentCA.class));
                     }
-                }else{
+                } else {
                     Toast.makeText(LoginCA.this, "Log In Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -101,50 +108,108 @@ public class LoginCA extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrName = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_name").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if (!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") && !usrDept.equals("")) {
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
+
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
             });
 
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrEnr = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_enr").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if (!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") && !usrDept.equals("")) {
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
+
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
             });
 
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     usrDept = snapshot.child("class_attender").child("students").child("it").child(usrEmail).child("s_dept").getValue().toString();
-                    Toast.makeText(LoginCA.this, em+", "+ usrEnr+", "+ usrName+", "+ usrDept, Toast.LENGTH_SHORT).show();
+                    if (!usrEmail.equals("") && !usrEnr.equals("") && !usrName.equals("") && !usrDept.equals("")) {
+                        dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
+                    }
                 }
+
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
             });
 
-            dbh.storeStudentDetails(em, usrEnr, usrName, usrDept);
-
         } catch (Exception e) {
-            Toast.makeText(this, e+"", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e + "", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if(fbAuth.getCurrentUser() != null){
-            usrEmail = fbAuth.getCurrentUser().getEmail();
-            if(usrEmail.endsWith("@classattender.com")){
-                startActivity(new Intent(LoginCA.this, MainActivity.class));
-            }else{
-                startActivity(new Intent(LoginCA.this, StudentCA.class));
+        if (getInternetConnectivityStatus()) {
+            if (fbAuth.getCurrentUser() != null) {
+                usrEmail = fbAuth.getCurrentUser().getEmail();
+                if (usrEmail.endsWith("@classattender.com")) {
+                    startActivity(new Intent(LoginCA.this, MainActivity.class));
+                    finish();
+                } else {
+                    if (!dbh.isUserRecentRegistered()) {
+                        startActivity(new Intent(LoginCA.this, StudentCA.class));
+                        finish();
+                    } else {
+                        dbh.writeUserRecentRegister(0);
+                    }
+                }
             }
-            finish();
+        }
+    }
+
+    public Boolean getInternetConnectivityStatus() {
+        ConnectivityManager cm = (ConnectivityManager) LoginCA.this.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        AlertDialog.Builder adb = new AlertDialog.Builder(LoginCA.this);
+        DialogInterface di = adb.create();
+        if (ni != null) {
+            di.dismiss();
+            if(checkedInternet) {
+                if (fbAuth.getCurrentUser() != null) {
+                    usrEmail = fbAuth.getCurrentUser().getEmail();
+                    if (usrEmail.endsWith("@classattender.com")) {
+                        startActivity(new Intent(LoginCA.this, MainActivity.class));
+                        finish();
+                    } else {
+                        if (!dbh.isUserRecentRegistered()) {
+                            startActivity(new Intent(LoginCA.this, StudentCA.class));
+                            finish();
+                        } else {
+                            dbh.writeUserRecentRegister(0);
+                        }
+                    }
+                }
+            }
+            return true;
+        } else {
+            adb.setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    getInternetConnectivityStatus();
+                    checkedInternet = true;
+                }
+            });
+            adb.setCancelable(false);
+            adb.setTitle("Internet not available!");
+            adb.setMessage("Internet not available!");
+            adb.setIcon(R.drawable.ic_warning);
+            di = adb.show();
+            return false;
         }
     }
 }

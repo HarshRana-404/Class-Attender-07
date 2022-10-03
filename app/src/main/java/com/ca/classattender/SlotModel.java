@@ -3,10 +3,10 @@ package com.ca.classattender;
 import org.jetbrains.annotations.NotNull;
 
 public class SlotModel {
-    int subCode, slotTemplate;
-    String subName, slotTime, subTeacher;
+    int slotTemplate;
+    String subName, slotTime, subCode, subTeacher;
 
-    public SlotModel(@NotNull int slotTemplate, String subName, String slotTime, int subCode, String subTeacher){
+    public SlotModel(@NotNull int slotTemplate, String subName, String slotTime, String subCode, String subTeacher){
         this.slotTemplate = slotTemplate;
         this.subName = subName;
         this.slotTime = slotTime;

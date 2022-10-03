@@ -42,12 +42,12 @@
                 android:layout_height="wrap_content"
                 android:text="00:00"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_alignParentLeft="true"
-                android:layout_marginTop="65dp"
-                android:layout_marginLeft="9dp" />
+                android:layout_marginTop="67dp"
+                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:id="@+id/tv_sub_teacher"
