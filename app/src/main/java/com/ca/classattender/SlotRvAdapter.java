@@ -1,6 +1,7 @@
 package com.ca.classattender;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -42,8 +44,21 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
             holder.tvSubCode.setText(slotList.get(position).subCode);
             holder.tvSubTeacher.setText(slotList.get(position).subTeacher);
 
-            Animation slotItemViewAnim = AnimationUtils.loadAnimation(context, android.R.anim.bounce_interpolator);
-            holder.itemView.startAnimation(slotItemViewAnim);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                    adb.setCancelable(true);
+                    adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    DialogInterface di = adb.create();
+                }
+            });
+
         } catch (Exception e) {
 //            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }

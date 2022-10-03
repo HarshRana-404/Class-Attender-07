@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,87 +7,93 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Class Attender"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"/>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Class Attender"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="20sp"/>
+                android:layout_below="@+id/app_bar"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-        </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Monday" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_monday_slots"
+                    style="@style/MyRecyclerView"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/app_bar"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Tuesday" />
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Monday" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tuesday_slots"
+                    style="@style/MyRecyclerView"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_monday_slots"
-            style="@style/MyRecyclerView"/>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Wednesday" />
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Tuesday" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_wednesday_slots"
+                    style="@style/MyRecyclerView"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_tuesday_slots"
-            style="@style/MyRecyclerView"/>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Thursday" />
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Wednesday" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_thursday_slots"
+                    style="@style/MyRecyclerView"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_wednesday_slots"
-            style="@style/MyRecyclerView"/>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Friday" />
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Thursday" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_friday_slots"
+                    style="@style/MyRecyclerView"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_thursday_slots"
-            style="@style/MyRecyclerView"/>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Saturday" />
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Friday" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_saturday_slots"
+                    style="@style/MyRecyclerView"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_friday_slots"
-            style="@style/MyRecyclerView"/>
+            </LinearLayout>
 
-        <TextView
-            style="@style/DaysTextView"
-            android:text="Saturday" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_saturday_slots"
-            style="@style/MyRecyclerView"/>
-
-    </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
@@ -99,9 +105,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
-        app:maxImageSize="30dp"
-        />
+        app:maxImageSize="30dp" />
 
 </RelativeLayout>
-
-</ScrollView>
