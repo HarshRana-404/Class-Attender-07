@@ -39,19 +39,22 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddTime;
     TextView tvShowTime, tvError;
     Spinner spDay, spSubject;
-    int hr, min;
+    int dayIndex;
     String strTime="", subTeacherShortName="", subCode="";
 //    RecyclerView rvMondaySlots, rvTuesdaySlots, rvWednesdaySlots, rvThursdaySlots, rvFridaySlots, rvSaturdaySlots;
     RecyclerView rvDaysSlots[] = new RecyclerView[6];
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
     ArrayList<Integer> slotTemplateImg = new ArrayList<>();
-    ArrayList<String> alDays = new ArrayList<>();
+    ArrayList<String> slotDaysList = new ArrayList<>();
     SlotRvAdapter slotRvAdapters[] = new SlotRvAdapter[6];
     FirebaseAuth fbAuth = FirebaseAuth.getInstance();
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
     DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/class_attender/otps/it");
+    DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
     String dbName="", dbCode="", dbTeacher="", dbTime="";
+
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -82,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
         hmSubCode.put("IC", "3130007");
         hmSubCode.put("PAS", "3130006");
 
-        alDays.add("mon");
-        alDays.add("tue");
-        alDays.add("wed");
-        alDays.add("thu");
-        alDays.add("fri");
-        alDays.add("sat");
+        slotDaysList.add("mon");
+        slotDaysList.add("tue");
+        slotDaysList.add("wed");
+        slotDaysList.add("thu");
+        slotDaysList.add("fri");
+        slotDaysList.add("sat");
 
         getSubjectTeacherShortName();
 
@@ -143,12 +146,24 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             subCode = hmSubCode.get(sub);
 
-                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child(subCode).setValue(subTeacherShortName);
-                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child("subject").setValue(sub);
-//                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(sub).setValue(dayOfWeek.toLowerCase());
+//                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child(subCode).setValue(subTeacherShortName);
+//                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child("subject").setValue(sub);
+////                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(sub).setValue(dayOfWeek.toLowerCase());
+//
+//                            slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, subCode, subTeacherShortName.toUpperCase()));
+//                            slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
+//                            bsAddSlot.dismiss();
 
-                            slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, subCode, subTeacherShortName.toUpperCase()));
-                            slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
+//                            slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, 3130004, "MNP"));
+//                            slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
+
+                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("template").setValue((positionOfSubject-1)%6);
+                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subject").setValue(sub);
+                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subcode").setValue(subCode);
+                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subteacher").setValue(subTeacherShortName.toUpperCase());
+                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subtime").setValue(strTime);
+
+                            getAllSlots();
                             bsAddSlot.dismiss();
                         }
                     }
@@ -179,42 +194,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        dbRefIT.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                for(int i=0;i<alDays.size();i++){
-                    long childCnt = snapshot.child(alDays.get(i)).getChildrenCount();
-                    for(int j=1;j<=childCnt;j++){
-                        String sub = snapshot.child(alDays.get(i)).child("slot"+j).child("subject").getValue().toString();
-                        String code = snapshot.child(alDays.get(i)).child("slot"+j).child("subcode").getValue().toString();
-                        String teacher = snapshot.child(alDays.get(i)).child("slot"+j).child("subteacher").getValue().toString();
-                        String time = snapshot.child(alDays.get(i)).child("slot"+j).child("subtime").getValue().toString();
-                        Toast.makeText(MainActivity.this, sub+", "+code+", "+teacher+", "+time, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
     }
     public void getSubjectTeacherShortName(){
         String tName = fbAuth.getCurrentUser().getEmail().toString();
@@ -234,6 +213,44 @@ public class MainActivity extends AppCompatActivity {
             subTeacherShortName = "am";
         }else if(tName.startsWith("ruturaj")){
             subTeacherShortName = "rpr";
+        }
+    }
+
+    public void getAllSlots(){
+        Toast.makeText(this, "In getAllSlots", Toast.LENGTH_SHORT).show();
+        try {
+            slotList.clear();
+            for (dayIndex=0; dayIndex<slotDaysList.size(); dayIndex++){
+                slotList.add(new ArrayList<>());
+                dbRefList.child(slotDaysList.get(dayIndex)).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            FbData fbData = snapshot.child("slot1").getValue(FbData.class);
+                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            Toast.makeText(MainActivity.this, "after adding slot", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
+                            int i = 2;
+                            while (fbData.subject != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                slotList.get(dayIndex).add(new SlotModel(fbData.template, fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
+                                i++;
+                            }
+                            slotRvAdapters[dayIndex].notifyDataSetChanged();
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }
