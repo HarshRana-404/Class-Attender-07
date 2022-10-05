@@ -6,9 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".StudentCA"
     android:gravity="center_horizontal"
-    android:padding="10dp"
     android:orientation="vertical"
     >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/st_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/st_toolbar"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class Attender"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <Button
         android:layout_width="wrap_content"

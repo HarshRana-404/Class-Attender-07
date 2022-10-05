@@ -1,14 +1,17 @@
 package com.ca.classattender;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,7 +24,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddTime;
     TextView tvShowTime, tvError;
     Spinner spDay, spSubject;
-    int dayIndex;
+    int dayIndex=0;
     String strTime="", subTeacherShortName="", subCode="";
 //    RecyclerView rvMondaySlots, rvTuesdaySlots, rvWednesdaySlots, rvThursdaySlots, rvFridaySlots, rvSaturdaySlots;
     RecyclerView rvDaysSlots[] = new RecyclerView[6];
@@ -61,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            View tb = findViewById(R.id.toolbar);
+            setSupportActionBar((Toolbar) tb);
+        } catch (Exception e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
 
         fabAddSlot = findViewById(R.id.fab_add_slot);
         rvDaysSlots[0] = findViewById(R.id.rv_monday_slots);
@@ -217,40 +226,199 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getAllSlots(){
-        Toast.makeText(this, "In getAllSlots", Toast.LENGTH_SHORT).show();
         try {
             slotList.clear();
-            for (dayIndex=0; dayIndex<slotDaysList.size(); dayIndex++){
-                slotList.add(new ArrayList<>());
-                dbRefList.child(slotDaysList.get(dayIndex)).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try {
-                            FbData fbData = snapshot.child("slot1").getValue(FbData.class);
+            slotList.add(new ArrayList<>());
+            dbRefList.child("mon").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try {
+                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+                        Toast.makeText(MainActivity.this, fbData.subject+", "+fbData.subcode+", "+fbData.subteacher+", "+fbData.subtime, Toast.LENGTH_SHORT).show();
+                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                        int i = 2;
+                        while (fbData.subject != null){
+                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
                             slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-                            Toast.makeText(MainActivity.this, "after adding slot", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
-                            int i = 2;
-                            while (fbData.subject != null){
-                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
-                                slotList.get(dayIndex).add(new SlotModel(fbData.template, fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-                                Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
-                                i++;
-                            }
-                            slotRvAdapters[dayIndex].notifyDataSetChanged();
-                        } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            i++;
                         }
+                    } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();                        slotRvAdapters[0].notifyDataSetChanged();
+                    }finally {
+                        slotRvAdapters[0].notifyDataSetChanged();
+                        slotList.get(0).notifyAll();
                     }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+//            dbRefList.child("tue").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    try {
+//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                        int i = 2;
+//                        while (fbData.subject != null){
+//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            i++;
+//                        }
+//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                    } catch (Exception e) {
+//                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
+//            dbRefList.child("wed").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    try {
+//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                        int i = 2;
+//                        while (fbData.subject != null){
+//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            i++;
+//                        }
+//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                    } catch (Exception e) {
+//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
+//            dbRefList.child("thu").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    try {
+//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                        int i = 2;
+//                        while (fbData.subject != null){
+//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            i++;
+//                        }
+//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                    } catch (Exception e) {
+//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
+//            dbRefList.child("fri").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    try {
+//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                        int i = 2;
+//                        while (fbData.subject != null){
+//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            i++;
+//                        }
+//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                    } catch (Exception e) {
+//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
+//            dbRefList.child("sat").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    try {
+//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
+//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                        int i = 2;
+//                        while (fbData.subject != null){
+//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            i++;
+//                        }
+//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                    } catch (Exception e) {
+//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            }
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        fbAuth.signOut();
+        startActivity(new Intent(MainActivity.this, LoginCA.class));
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public void getAllSlots(){
+//        try {
+//            slotList.clear();
+//            for(int j=0; j<slotDaysList.size(); j++){
+//                dayIndex=j;
+//                slotList.add(new ArrayList<>());
+//                dbRefList.child(slotDaysList.get(j)).addValueEventListener(new ValueEventListener() {
+//                    @SuppressLint("NotifyDataSetChanged")
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        try {
+//                            Toast.makeText(MainActivity.this, "slot0"+dayIndex, Toast.LENGTH_SHORT).show();
+//                            FbData fbData = snapshot.child("slot0"+dayIndex+1).getValue(FbData.class);
+//                            Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
+//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                            Toast.makeText(MainActivity.this, "after adding slot", Toast.LENGTH_SHORT).show();
+//                            int i = 2;
+//                            while (fbData.subject != null){
+//                                fbData = snapshot.child("slot0"+i+1).getValue(FbData.class);
+//                                slotList.get(dayIndex).add(new SlotModel(fbData.template, fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+//                                Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
+//                                i++;
+//                            }
+//                            slotRvAdapters[dayIndex].notifyDataSetChanged();
+//                        } catch (Exception e) {
+//                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {}
+//                });
+//            }
+//        } catch (Exception e) {
+//            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    }

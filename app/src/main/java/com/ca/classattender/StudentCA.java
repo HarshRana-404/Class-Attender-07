@@ -3,10 +3,14 @@ package com.ca.classattender;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,11 +34,20 @@ public class StudentCA extends AppCompatActivity {
     Cursor csr;
     String otp, usrEmail="", usrEnr="", usrName="", usrDept="";
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
+    FirebaseAuth fbAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_ca);
+
+        try {
+            View tb = findViewById(R.id.st_toolbar);
+            setSupportActionBar((Toolbar) tb);
+        } catch (Exception e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void verifyOTPClick(View view) {
@@ -79,5 +92,19 @@ public class StudentCA extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        fbAuth.signOut();
+        startActivity(new Intent(StudentCA.this, LoginCA.class));
+        finish();
+        return super.onOptionsItemSelected(item);
     }
 }
