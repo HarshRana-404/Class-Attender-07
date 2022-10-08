@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -443,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -470,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -522,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
                                 i++;
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            
                         }
                     }
                     @Override
