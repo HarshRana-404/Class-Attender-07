@@ -44,23 +44,23 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
             holder.tvSubCode.setText(slotList.get(position).subCode);
             holder.tvSubTeacher.setText(slotList.get(position).subTeacher);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                    adb.setCancelable(true);
-                    adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-                    DialogInterface di = adb.create();
-                }
-            });
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
+//                    adb.setCancelable(true);
+//                    adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        }
+//                    });
+//                    DialogInterface di = adb.create();
+//                }
+//            });
 
         } catch (Exception e) {
-//            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

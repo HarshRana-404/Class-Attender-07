@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,9 +42,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddTime;
     TextView tvShowTime, tvError;
     Spinner spDay, spSubject;
-    int dayIndex=0;
-    String strTime="", subTeacherShortName="", subCode="";
-//    RecyclerView rvMondaySlots, rvTuesdaySlots, rvWednesdaySlots, rvThursdaySlots, rvFridaySlots, rvSaturdaySlots;
+    int positionOfSubject=0, positionOfDay=0, index=0;
+    String sub="", strTime="", subTeacherShortName="", subCode="", dayOfWeek = "";
     RecyclerView rvDaysSlots[] = new RecyclerView[6];
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
     ArrayList<Integer> slotTemplateImg = new ArrayList<>();
@@ -54,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/class_attender/otps/it");
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
-    String dbName="", dbCode="", dbTeacher="", dbTime="";
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -102,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         slotDaysList.add("sat");
 
         getSubjectTeacherShortName();
+        getAllSlots(6);
 
         try {
             for (int i=0; i<6; i++){
@@ -139,12 +137,13 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 imgAddSlot.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onClick(View view) {
-                        String dayOfWeek = spDay.getSelectedItem().toString();
-                        String sub = spSubject.getSelectedItem().toString();
-                        int positionOfDay = spDay.getSelectedItemPosition();
-                        int positionOfSubject = spSubject.getSelectedItemPosition();
+                        dayOfWeek = spDay.getSelectedItem().toString();
+                        sub = spSubject.getSelectedItem().toString();
+                        positionOfDay = spDay.getSelectedItemPosition();
+                        positionOfSubject = spSubject.getSelectedItemPosition();
 
                         if(dayOfWeek.equals("Select Day")){
                             tvError.setText("Select day!");
@@ -154,36 +153,20 @@ public class MainActivity extends AppCompatActivity {
                             tvError.setText("Set time!");
                         }else {
                             subCode = hmSubCode.get(sub);
+                            addNewSlot();
+                            getAllSlots(positionOfDay-1);
 
-//                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child(subCode).setValue(subTeacherShortName);
-//                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(strTime).child("subject").setValue(sub);
-////                            dbRef.child("class_attender").child("otps").child("it").child(dayOfWeek.toLowerCase()).child(sub).setValue(dayOfWeek.toLowerCase());
-//
-//                            slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, subCode, subTeacherShortName.toUpperCase()));
-//                            slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
-//                            bsAddSlot.dismiss();
-
-//                            slotList.get(positionOfDay-1).add(new SlotModel(slotTemplateImg.get((positionOfSubject-1)%6), sub, strTime, 3130004, "MNP"));
-//                            slotRvAdapters[positionOfDay-1].notifyDataSetChanged();
-
-                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("template").setValue((positionOfSubject-1)%6);
-                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subject").setValue(sub);
-                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subcode").setValue(subCode);
-                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subteacher").setValue(subTeacherShortName.toUpperCase());
-                            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotList.get(positionOfDay-1).size()+1).child("subtime").setValue(strTime);
-
-                            getAllSlots();
                             bsAddSlot.dismiss();
                         }
                     }
                 });
-
                 btnAddTime.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         TimePickerDialog tpd = new TimePickerDialog(
                                 MainActivity.this, R.style.MyTimePickerDialog,
                                 new TimePickerDialog.OnTimeSetListener() {
+                                    @SuppressLint("SetTextI18n")
                                     @Override
                                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                                         if (hour < 10 && minute < 10){
@@ -225,137 +208,356 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getAllSlots(){
+    public void addNewSlot(){
         try {
-            slotList.clear();
-            slotList.add(new ArrayList<>());
-            dbRefList.child("mon").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
-                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-                        Toast.makeText(MainActivity.this, fbData.subject+", "+fbData.subcode+", "+fbData.subteacher+", "+fbData.subtime, Toast.LENGTH_SHORT).show();
-                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-                        int i = 2;
-                        while (fbData.subject != null){
-                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-                            i++;
-                        }
-                    } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();                        slotRvAdapters[0].notifyDataSetChanged();
-                    }finally {
-                        slotRvAdapters[0].notifyDataSetChanged();
-                        slotList.get(0).notifyAll();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
-            });
-//            dbRefList.child("tue").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    try {
-//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                        int i = 2;
-//                        while (fbData.subject != null){
-//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            i++;
-//                        }
-//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                    } catch (Exception e) {
-//                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {}
-//            });
-//            dbRefList.child("wed").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    try {
-//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                        int i = 2;
-//                        while (fbData.subject != null){
-//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            i++;
-//                        }
-//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                    } catch (Exception e) {
-//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {}
-//            });
-//            dbRefList.child("thu").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    try {
-//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                        int i = 2;
-//                        while (fbData.subject != null){
-//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            i++;
-//                        }
-//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                    } catch (Exception e) {
-//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {}
-//            });
-//            dbRefList.child("fri").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    try {
-//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                        int i = 2;
-//                        while (fbData.subject != null){
-//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            i++;
-//                        }
-//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                    } catch (Exception e) {
-//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {}
-//            });
-//            dbRefList.child("sat").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    try {
-//                        FbData fbData = snapshot.child("slot0"+1).getValue(FbData.class);
-//                        slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                        int i = 2;
-//                        while (fbData.subject != null){
-//                            fbData = snapshot.child("slot0"+i).getValue(FbData.class);
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            i++;
-//                        }
-//                        slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                    } catch (Exception e) {
-//                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {}
-//            });
-
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subcode").setValue(subCode);
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subteacher").setValue(subTeacherShortName.toUpperCase());
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subject").setValue(sub);
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subtime").setValue(strTime);
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("template").setValue((positionOfSubject-1)%6);
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void notifyAdapter(int i){
+        slotRvAdapters[i].notifyDataSetChanged();
+    }
+
+    public void getAllSlots(int in){
+        index = in;
+        switch(in){
+            case 0:
+                dbRefList.child("mon").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 1:
+                dbRefList.child("tue").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 2:
+                dbRefList.child("wed").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 3:
+                dbRefList.child("thu").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 4:
+                dbRefList.child("fri").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 5:
+                dbRefList.child("sat").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(index).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(index);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(index);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+            case 6:
+                dbRefList.child("mon").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(0).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(0);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(0);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                dbRefList.child("tue").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(1).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(1);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(1);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                dbRefList.child("wed").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            Log.d("bhen", "index: "+index);
+                            slotList.get(2).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(2);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(2);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                dbRefList.child("thu").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(3).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(3);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(3);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                dbRefList.child("fri").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(4).clear();
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(4);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(4);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                dbRefList.child("sat").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            slotList.get(5).clear();
+                            Log.d("bhen", "indexsat: "+index);
+                            FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                            if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                            }
+                            notifyAdapter(5);
+                            int i = 2;
+                            while (fbData != null){
+                                fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
+                                    slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                }
+                                notifyAdapter(5);
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+                break;
+        }
+
     }
 
     @Override
@@ -372,53 +574,3 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    public void getAllSlots(){
-//        try {
-//            slotList.clear();
-//            for(int j=0; j<slotDaysList.size(); j++){
-//                dayIndex=j;
-//                slotList.add(new ArrayList<>());
-//                dbRefList.child(slotDaysList.get(j)).addValueEventListener(new ValueEventListener() {
-//                    @SuppressLint("NotifyDataSetChanged")
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        try {
-//                            Toast.makeText(MainActivity.this, "slot0"+dayIndex, Toast.LENGTH_SHORT).show();
-//                            FbData fbData = snapshot.child("slot0"+dayIndex+1).getValue(FbData.class);
-//                            Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
-//                            slotList.get(dayIndex).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                            Toast.makeText(MainActivity.this, "after adding slot", Toast.LENGTH_SHORT).show();
-//                            int i = 2;
-//                            while (fbData.subject != null){
-//                                fbData = snapshot.child("slot0"+i+1).getValue(FbData.class);
-//                                slotList.get(dayIndex).add(new SlotModel(fbData.template, fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
-//                                Toast.makeText(MainActivity.this, fbData.subject+fbData.subcode+fbData.subteacher+fbData.subtime, Toast.LENGTH_SHORT).show();
-//                                i++;
-//                            }
-//                            slotRvAdapters[dayIndex].notifyDataSetChanged();
-//                        } catch (Exception e) {
-//                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {}
-//                });
-//            }
-//        } catch (Exception e) {
-//            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-//        }
-//    }
