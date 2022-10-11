@@ -1,42 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StudentCA"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    >
+    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/st_app_bar"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/st_toolbar"
-            >
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toolbar"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Class Attender"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"/>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Class Attender"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText" />
+                android:layout_below="@+id/app_bar"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-        </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Monday" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_monday_slots_std"
+                    style="@style/MyRecyclerView" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OTP"
-        android:onClick="verifyOTPClick"
-        />
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Tuesday" />
 
-</LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tuesday_slots_std"
+                    style="@style/MyRecyclerView" />
+
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Wednesday" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_wednesday_slots_std"
+                    style="@style/MyRecyclerView" />
+
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Thursday" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_thursday_slots_std"
+                    style="@style/MyRecyclerView" />
+
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Friday" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_friday_slots_std"
+                    style="@style/MyRecyclerView" />
+
+                <TextView
+                    style="@style/DaysTextView"
+                    android:text="Saturday" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_saturday_slots_std"
+                    style="@style/MyRecyclerView" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

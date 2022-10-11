@@ -205,7 +205,7 @@ public class LoginCA extends AppCompatActivity {
                 }
             });
             adb.setCancelable(false);
-            adb.setTitle("Internet not available!");
+            adb.setTitle("Network not found!");
             adb.setMessage("Internet not available!");
             adb.setIcon(R.drawable.ic_warning);
             di = adb.show();
