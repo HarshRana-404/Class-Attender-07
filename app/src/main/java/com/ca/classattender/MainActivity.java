@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> slotDaysList = new ArrayList<>();
     SlotRvAdapter slotRvAdapters[] = new SlotRvAdapter[6];
     FirebaseAuth fbAuth = FirebaseAuth.getInstance();
-    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/");
-    DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReferenceFromUrl("https://class-attender-07-default-rtdb.firebaseio.com/class_attender/otps/it");
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
 
@@ -236,14 +234,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "mon"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "mon"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -264,14 +262,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "tue"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "tue"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -292,14 +290,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "wed"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "wed"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -320,14 +318,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "thu"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "thu"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -348,14 +346,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "fri"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "fri"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -376,14 +374,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(index).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "sat"));
                             }
                             notifyAdapter(index);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(index).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "sat"));
                                 }
                                 notifyAdapter(index);
                                 i++;
@@ -404,14 +402,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(0).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "mon"));
                             }
                             notifyAdapter(0);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(0).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "mon"));
                                 }
                                 notifyAdapter(0);
                                 i++;
@@ -430,14 +428,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(1).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "tue"));
                             }
                             notifyAdapter(1);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(1).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "tue"));
                                 }
                                 notifyAdapter(1);
                                 i++;
@@ -457,14 +455,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(2).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "wed"));
                             }
                             notifyAdapter(2);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(2).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "wed"));
                                 }
                                 notifyAdapter(2);
                                 i++;
@@ -483,14 +481,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(3).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "thu"));
                             }
                             notifyAdapter(3);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(3).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "thu"));
                                 }
                                 notifyAdapter(3);
                                 i++;
@@ -509,14 +507,14 @@ public class MainActivity extends AppCompatActivity {
                             slotList.get(4).clear();
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "fri"));
                             }
                             notifyAdapter(4);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(4).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "fri"));
                                 }
                                 notifyAdapter(4);
                                 i++;
@@ -536,14 +534,14 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("bhen", "indexsat: "+index);
                             FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                             if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "sat"));
                             }
                             notifyAdapter(5);
                             int i = 2;
                             while (fbData != null){
                                 fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                 if(fbData.subteacher.toUpperCase().equals(subTeacherShortName.toUpperCase())){
-                                    slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher));
+                                    slotList.get(5).add(new SlotModel(slotTemplateImg.get(fbData.template), fbData.subject, fbData.subtime, fbData.subcode, fbData.subteacher, "sat"));
                                 }
                                 notifyAdapter(5);
                                 i++;

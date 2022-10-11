@@ -1,5 +1,6 @@
 package com.ca.classattender;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
 
     Context context;
     ArrayList<SlotModel> slotList;
+    int pos;
 
     public SlotRvAdapter(Context context, ArrayList<SlotModel> slotList){
         this.context = context;
@@ -36,8 +39,9 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         try {
+            pos = position;
             holder.ivSlotTemplate.setImageResource(slotList.get(position).slotTemplate);
             holder.tvSubName.setText(slotList.get(position).subName);
             holder.tvSlotTime.setText(slotList.get(position).slotTime);
@@ -53,7 +57,8 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                     adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
+                            GenerateOTP go = new GenerateOTP(context);
+                            go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
                         }
                     });
                     adb.show();
