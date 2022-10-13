@@ -69,7 +69,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             GenerateOTP go = new GenerateOTP(context);
-                            go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
+                            go.generateNewOTP(slotList.get(position).subDay, slotList.get(position).subName, slotList.get(position).slotTime, slotList.get(position).subTeacher);
                         }
                     });
                     adb.show();

@@ -32,20 +32,17 @@ public class GenerateOTP {
                     String strOTP = String.valueOf(rn.nextInt(999999 - 111111) + 111111);
                     FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                     if(fbData.subteacher.toUpperCase().equals(subTeacher.toUpperCase()) && fbData.subject.toUpperCase().equals(subName.toUpperCase()) && fbData.subtime.equals(subTime)){
-                        Toast.makeText(context, fbData.subject+" - " +fbData.subteacher+" - " +fbData.subtime+" - " , Toast.LENGTH_SHORT).show();
                         dbRefIT.child(subDay).child("slot"+1).child("otp").setValue(strOTP);
                     }
                     int i = 2;
                     while (fbData != null){
                         fbData = snapshot.child("slot"+i).getValue(FbData.class);
-                        Toast.makeText(context, fbData.subject+" - " +fbData.subteacher+" - " +fbData.subtime+" - " , Toast.LENGTH_SHORT).show();
                         if(fbData.subteacher.toUpperCase().equals(subTeacher.toUpperCase()) && fbData.subject.toUpperCase().equals(subName.toUpperCase()) && fbData.subtime.equals(subTime)){
                             dbRefIT.child(subDay).child("slot"+i).child("otp").setValue(strOTP);
                         }
                         i++;
                     }
                 } catch (Exception e) {
-                    Toast.makeText(context, "ex:"+e, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override

@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +37,8 @@ public class VerifyOTP extends BottomSheetDialog{
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
     ArrayList<Integer> slotTemplateImg = new ArrayList<>();
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
+    TextView tvSubName, tvSubTime, tvSubCode, tvSubTeacher;
+    ImageView ivSlotTemplate;
 
     public VerifyOTP(Context context){
         super(context);
@@ -48,13 +52,26 @@ public class VerifyOTP extends BottomSheetDialog{
         slotTemplateImg.add(R.drawable.slot_template_6);
     }
 
-    public void verifyOTP(String subDay, String subName, String subTime, String subTeacher){
+    public void verifyOTP(String subDay, String subName, String subTime, String subTeacher, String subCode, int subTemplate){
         try{
             BottomSheetDialog bsVerifyOTP = new BottomSheetDialog(context);
             View v = LayoutInflater.from(context).inflate(R.layout.verify_otp_bottom_sheet, (ViewGroup) findViewById(R.id.bs_otp_root_layout));
             bsVerifyOTP.setContentView(v);
             btnVerifyOTP = v.findViewById(R.id.btn_verify_otp);
             etOTP = v.findViewById(R.id.et_otp);
+
+            tvSubName = v.findViewById(R.id.tv_sub_name_std);
+            tvSubCode = v.findViewById(R.id.tv_sub_code_std);
+            tvSubTime = v.findViewById(R.id.tv_slot_time_std);
+            tvSubTeacher = v.findViewById(R.id.tv_sub_teacher_std);
+            ivSlotTemplate = v.findViewById(R.id.iv_slot_template_std);
+
+            tvSubName.setText(subName.toUpperCase());
+            tvSubCode.setText(subCode.toUpperCase());
+            tvSubTime.setText(subTime.toUpperCase());
+            tvSubTeacher.setText(subTeacher.toUpperCase());
+            ivSlotTemplate.setBackgroundResource(subTemplate);
+
             bsVerifyOTP.show();
 
             btnVerifyOTP.setOnClickListener(new View.OnClickListener() {

@@ -61,7 +61,7 @@ public class SlotRvAdapterStudent extends RecyclerView.Adapter<SlotRvAdapterStud
                 @Override
                 public void onClick(View view) {
                     VerifyOTP vo = new VerifyOTP(context);
-                    vo.verifyOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
+                    vo.verifyOTP(slotList.get(position).subDay, slotList.get(position).subName, slotList.get(position).slotTime, slotList.get(position).subTeacher, slotList.get(position).subCode, slotList.get(position).slotTemplate);
                 }
             });
 

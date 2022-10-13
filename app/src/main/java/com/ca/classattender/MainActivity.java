@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fbAuth = FirebaseAuth.getInstance();
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
+    ProgressDialog pd;
+    int slotNums=0;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -98,9 +101,13 @@ public class MainActivity extends AppCompatActivity {
         slotDaysList.add("fri");
         slotDaysList.add("sat");
 
+        pd = new ProgressDialog(MainActivity.this, R.style.CustomProgressDialog);
+        pd.setMessage("Loading Slots");
+        pd.setCancelable(false);
+        pd.show();
+        pd.setContentView(R.layout.progress_dialog_layout);
         getSubjectTeacherShortName();
         getAllSlots(6);
-
         try {
             for (int i=0; i<6; i++){
                 rvDaysSlots[i].setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
@@ -154,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             subCode = hmSubCode.get(sub);
                             addNewSlot();
-                            getAllSlots(positionOfDay-1);
-
                             bsAddSlot.dismiss();
                         }
                     }
@@ -212,11 +217,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNewSlot(){
         try {
-            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subcode").setValue(subCode);
-            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subteacher").setValue(subTeacherShortName.toUpperCase());
-            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subject").setValue(sub);
-            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("subtime").setValue(strTime);
-            dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+(slotList.get(positionOfDay-1).size()+1)).child("template").setValue((positionOfSubject-1)%6);
+            slotNums=0;
+            dbRefList.child(slotDaysList.get(positionOfDay-1)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try {
+                        FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                        slotNums++;
+                        int i = 2;
+                        while (fbData != null){
+                            fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                            slotNums++;
+                            i++;
+                        }
+                    } catch (Exception e) {}
+                    finally {
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subcode").setValue(subCode);
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subteacher").setValue(subTeacherShortName.toUpperCase());
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subject").setValue(sub);
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subtime").setValue(strTime);
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("template").setValue((positionOfSubject-1)%6);
+                        getAllSlots(positionOfDay-1);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
@@ -552,6 +578,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } catch (Exception e) {
                             
+                        }
+                        finally {
+                            pd.hide();
                         }
                     }
                     @Override
