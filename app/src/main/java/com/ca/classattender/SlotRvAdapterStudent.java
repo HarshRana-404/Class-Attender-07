@@ -3,16 +3,28 @@ package com.ca.classattender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -48,17 +60,8 @@ public class SlotRvAdapterStudent extends RecyclerView.Adapter<SlotRvAdapterStud
             holder.ivSlotTemplate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                    adb.setTitle("OTP");
-                    adb.setCancelable(true);
-                    adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            GenerateOTP go = new GenerateOTP(context);
-                            go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
-                        }
-                    });
-                    adb.show();
+                    VerifyOTP vo = new VerifyOTP(context);
+                    vo.verifyOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
                 }
             });
 

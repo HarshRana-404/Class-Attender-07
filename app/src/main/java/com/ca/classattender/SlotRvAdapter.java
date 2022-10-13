@@ -18,16 +18,25 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder> {
 
     Context context;
     ArrayList<SlotModel> slotList;
     int pos;
+    HashMap<String, String> hmDay= new HashMap<>();
+    String subDayFull="";
 
     public SlotRvAdapter(Context context, ArrayList<SlotModel> slotList){
         this.context = context;
         this.slotList = slotList;
+        hmDay.put("mon", "Monday");
+        hmDay.put("tue", "Tuesday");
+        hmDay.put("wed", "Wednesday");
+        hmDay.put("thu", "Thursday");
+        hmDay.put("fri", "Friday");
+        hmDay.put("sat", "Saturday");
     }
 
     @NonNull
@@ -51,9 +60,11 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
             holder.ivSlotTemplate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    subDayFull = hmDay.get(slotList.get(pos).subDay.toLowerCase());
                     AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                    adb.setTitle("OTP");
+                    adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
                     adb.setCancelable(true);
+                    adb.setMessage("");
                     adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

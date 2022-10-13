@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -47,9 +48,10 @@ public class StudentCA extends AppCompatActivity {
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
     ArrayList<Integer> slotTemplateImg = new ArrayList<>();
     ArrayList<String> slotDaysList = new ArrayList<>();
-    SlotRvAdapter slotRvAdapters[] = new SlotRvAdapter[6];
+    SlotRvAdapterStudent slotRvAdapters[] = new SlotRvAdapterStudent[6];
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
+    ProgressDialog pd;
 
 
     @SuppressLint("MissingInflatedId")
@@ -91,7 +93,7 @@ public class StudentCA extends AppCompatActivity {
             for (int i=0; i<6; i++){
                 rvDaysSlots[i].setLayoutManager(new LinearLayoutManager(StudentCA.this, LinearLayoutManager.HORIZONTAL, false));
                 slotList.add(new ArrayList<>());
-                slotRvAdapters[i] = new SlotRvAdapter(StudentCA.this, slotList.get(i));
+                slotRvAdapters[i] = new SlotRvAdapterStudent(StudentCA.this, slotList.get(i));
                 rvDaysSlots[i].setAdapter(slotRvAdapters[i]);
             }
         } catch (Exception e) {
@@ -104,7 +106,11 @@ public class StudentCA extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
-
+        pd = new ProgressDialog(StudentCA.this, R.style.CustomProgressDialog);
+        pd.setMessage("Loading Slots");
+        pd.setCancelable(false);
+        pd.show();
+        pd.setContentView(R.layout.progress_dialog_layout);
         getAllSlots();
 
     }
@@ -286,6 +292,8 @@ public class StudentCA extends AppCompatActivity {
                     }
                 } catch (Exception e) {
 
+                }finally {
+                    pd.hide();
                 }
             }
             @Override

@@ -205,6 +205,8 @@ public class MainActivity extends AppCompatActivity {
             subTeacherShortName = "am";
         }else if(tName.startsWith("ruturaj")){
             subTeacherShortName = "rpr";
+        }else if(tName.startsWith("darshak")){
+            subTeacherShortName = "dbm";
         }
     }
 
