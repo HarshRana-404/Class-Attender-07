@@ -1,6 +1,7 @@
 package com.ca.classattender;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.RestrictionEntry;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -97,7 +98,6 @@ public class VerifyOTP extends BottomSheetDialog{
                                         if(fbData.subject.toUpperCase().equals(subName) && fbData.subteacher.toUpperCase().equals(subTeacher) && fbData.subtime.toUpperCase().equals(subTime)){
                                             String otp;
                                             otp = snapshot.child(subDay).child("slot"+1).child("otp").getValue().toString();
-                                            Toast.makeText(context, otp+"", Toast.LENGTH_SHORT).show();
                                         }
                                         int i = 2;
                                         while (fbData != null){

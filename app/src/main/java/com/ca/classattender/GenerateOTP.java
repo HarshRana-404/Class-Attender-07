@@ -1,6 +1,7 @@
 package com.ca.classattender;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,12 +34,18 @@ public class GenerateOTP {
                     FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                     if(fbData.subteacher.toUpperCase().equals(subTeacher.toUpperCase()) && fbData.subject.toUpperCase().equals(subName.toUpperCase()) && fbData.subtime.equals(subTime)){
                         dbRefIT.child(subDay).child("slot"+1).child("otp").setValue(strOTP);
+                        Intent inFUllScreenOTP = new Intent(context, FullScreenOTP.class);
+                        inFUllScreenOTP.putExtra("otp", strOTP);
+                        context.startActivity(inFUllScreenOTP);
                     }
                     int i = 2;
                     while (fbData != null){
                         fbData = snapshot.child("slot"+i).getValue(FbData.class);
                         if(fbData.subteacher.toUpperCase().equals(subTeacher.toUpperCase()) && fbData.subject.toUpperCase().equals(subName.toUpperCase()) && fbData.subtime.equals(subTime)){
                             dbRefIT.child(subDay).child("slot"+i).child("otp").setValue(strOTP);
+                            Intent inFUllScreenOTP = new Intent(context, FullScreenOTP.class);
+                            inFUllScreenOTP.putExtra("otp", strOTP);
+                            context.startActivity(inFUllScreenOTP);
                         }
                         i++;
                     }

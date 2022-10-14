@@ -6,16 +6,18 @@ public class FbData {
     public String subcode="";
     public String subteacher="";
     public String subtime="";
+    public String otp="";
 
     public FbData(){
 
     }
 
-    public FbData(int template, String subject, String subcode, String subteacher, String subtime){
+    public FbData(int template, String subject, String subcode, String subteacher, String subtime, String otp){
         this.template = template;
         this.subject = subject;
         this.subcode = subcode;
         this.subteacher = subteacher;
         this.subtime = subtime;
+        this.otp = otp;
     }
 }

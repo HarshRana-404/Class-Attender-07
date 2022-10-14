@@ -3,6 +3,7 @@ package com.ca.classattender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder> {
@@ -26,7 +35,9 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
     ArrayList<SlotModel> slotList;
     int pos;
     HashMap<String, String> hmDay= new HashMap<>();
-    String subDayFull="";
+    String subDayFull="", otpGen="";
+    DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
+
 
     public SlotRvAdapter(Context context, ArrayList<SlotModel> slotList){
         this.context = context;
@@ -50,7 +61,6 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         try {
-            pos = position;
             holder.ivSlotTemplate.setImageResource(slotList.get(position).slotTemplate);
             holder.tvSubName.setText(slotList.get(position).subName);
             holder.tvSlotTime.setText(slotList.get(position).slotTime);
@@ -60,25 +70,87 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
             holder.ivSlotTemplate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    subDayFull = hmDay.get(slotList.get(pos).subDay.toLowerCase());
-                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                    adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
-                    adb.setCancelable(true);
-                    adb.setMessage("");
-                    adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+                    pos = position;
+
+                    dbRefIT.child(slotList.get(position).subDay).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            GenerateOTP go = new GenerateOTP(context);
-                            go.generateNewOTP(slotList.get(position).subDay, slotList.get(position).subName, slotList.get(position).slotTime, slotList.get(position).subTeacher);
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            try {
+                                subDayFull = hmDay.get(slotList.get(pos).subDay.toLowerCase());
+                                FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
+                                if(fbData.subject.toUpperCase().equals(slotList.get(position).subName) && fbData.subteacher.toUpperCase().equals(slotList.get(position).subTeacher) && fbData.subtime.toUpperCase().equals(slotList.get(position).slotTime)){
+                                    String otpGen = fbData.otp;
+                                    if(!otpGen.equals("")){
+                                        AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                                        adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
+                                        adb.setCancelable(true);
+                                        adb.setMessage("OTP: "+otpGen);
+                                        adb.setPositiveButton("VIEW IN FULLSCREEN", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent inFUllScreenOTP = new Intent(context, FullScreenOTP.class);
+                                                inFUllScreenOTP.putExtra("otp", otpGen);
+                                                context.startActivity(inFUllScreenOTP);
+                                            }
+                                        });
+                                        adb.show();
+                                    }else{
+                                        otpIsNeeded();
+                                    }
+                                }
+                                int i = 2;
+                                while (fbData != null){
+                                    fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                    if(fbData.subject.toUpperCase().equals(slotList.get(position).subName) && fbData.subteacher.toUpperCase().equals(slotList.get(position).subTeacher) && fbData.subtime.toUpperCase().equals(slotList.get(position).slotTime)){
+                                        otpGen = fbData.otp;
+                                        if(!otpGen.equals("")){
+                                            AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                                            adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
+                                            adb.setCancelable(true);
+                                            adb.setMessage("OTP: "+otpGen);
+                                            adb.setPositiveButton("VIEW IN FULLSCREEN", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent inFUllScreenOTP = new Intent(context, FullScreenOTP.class);
+                                                    inFUllScreenOTP.putExtra("otp", otpGen);
+                                                    context.startActivity(inFUllScreenOTP);
+                                                }
+                                            });
+                                            adb.show();
+                                        }else{
+                                            otpIsNeeded();
+                                        }
+                                    }
+                                    i++;
+                                }
+                            } catch (Exception e) {
+
+                            }
                         }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
                     });
-                    adb.show();
                 }
             });
 
         } catch (Exception e) {
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    public void otpIsNeeded(){
+        AlertDialog.Builder adb = new AlertDialog.Builder(context);
+        adb.setTitle(slotList.get(pos).subName+" - " + slotList.get(pos).slotTime+" on "+subDayFull);
+        adb.setCancelable(true);
+        adb.setMessage("");
+        adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                GenerateOTP go = new GenerateOTP(context);
+                go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
+            }
+        });
+        adb.show();
     }
 
     @Override
