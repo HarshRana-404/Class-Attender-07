@@ -88,29 +88,37 @@ public class VerifyOTP extends BottomSheetDialog{
                                 usrName = csr.getString(2);
                                 usrDept = csr.getString(3);
                             }
-                            Toast.makeText(context, usrEmail+", "+ usrEnr+", "+ usrName+", ", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, usrEmail+", "+ usrEnr+", "+ usrName+", ", Toast.LENGTH_SHORT).show();
                             dbRef.child(subDay).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     try {
-                                        slotList.get(0).clear();
+//                                        slotList.get(0).clear();
                                         FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                                         if(fbData.subject.toUpperCase().equals(subName) && fbData.subteacher.toUpperCase().equals(subTeacher) && fbData.subtime.toUpperCase().equals(subTime)){
-                                            String otp;
-                                            otp = snapshot.child(subDay).child("slot"+1).child("otp").getValue().toString();
+                                            String dbOTP;
+                                            dbOTP = fbData.otp;
+                                            if(dbOTP.equals(otp)){
+                                                Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Toast.makeText(context, "Wrong OTP!", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                         int i = 2;
                                         while (fbData != null){
                                             fbData = snapshot.child("slot"+i).getValue(FbData.class);
                                             if(fbData.subject.toUpperCase().equals(subName) && fbData.subteacher.toUpperCase().equals(subTeacher) && fbData.subtime.toUpperCase().equals(subTime)){
-                                                String otp;
-                                                otp = snapshot.child(subDay).child("slot"+1).child("otp").getValue().toString();
-                                                Toast.makeText(context, otp+"", Toast.LENGTH_SHORT).show();
+                                                String dbOTP;
+                                                dbOTP = fbData.otp;
+                                                if(dbOTP.equals(otp)){
+                                                    Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
+                                                }else{
+                                                    Toast.makeText(context, "Wrong OTP!", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                             i++;
                                         }
                                     } catch (Exception e) {
-
                                     }
                                 }
                                 @Override
