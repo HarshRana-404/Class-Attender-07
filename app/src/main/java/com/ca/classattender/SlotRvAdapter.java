@@ -93,6 +93,15 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                                 context.startActivity(inFUllScreenOTP);
                                             }
                                         });
+                                        adb.setNeutralButton("VIEW PRESENCE", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent inViewPresence = new Intent(context, ViewPresence.class);
+                                                inViewPresence.putExtra("slotno", "slot"+1);
+                                                inViewPresence.putExtra("subday", slotList.get(position).subDay);
+                                                context.startActivity(inViewPresence);
+                                            }
+                                        });
                                         adb.show();
                                     }else{
                                         otpIsNeeded();
@@ -114,6 +123,15 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                                     Intent inFUllScreenOTP = new Intent(context, FullScreenOTP.class);
                                                     inFUllScreenOTP.putExtra("otp", otpGen);
                                                     context.startActivity(inFUllScreenOTP);
+                                                }
+                                            });
+                                            adb.setNeutralButton("VIEW PRESENCE", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent inViewPresence = new Intent(context, ViewPresence.class);
+                                                    inViewPresence.putExtra("slotno", "slot"+i);
+                                                    inViewPresence.putExtra("subday", slotList.get(position).subDay);
+                                                    context.startActivity(inViewPresence);
                                                 }
                                             });
                                             adb.show();

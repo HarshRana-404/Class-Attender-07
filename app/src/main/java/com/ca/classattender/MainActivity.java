@@ -237,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subject").setValue(sub);
                         dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("subtime").setValue(strTime);
                         dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("template").setValue((positionOfSubject-1)%6);
+                        dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("presentcnt").setValue(0);
                         getAllSlots(positionOfDay-1);
                     }
                 }

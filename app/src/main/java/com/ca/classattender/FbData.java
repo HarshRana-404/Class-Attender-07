@@ -7,17 +7,19 @@ public class FbData {
     public String subteacher="";
     public String subtime="";
     public String otp="";
+    public int presentcnt=0;
 
     public FbData(){
 
     }
 
-    public FbData(int template, String subject, String subcode, String subteacher, String subtime, String otp){
+    public FbData(int template, String subject, String subcode, String subteacher, String subtime, String otp, int presentcnt){
         this.template = template;
         this.subject = subject;
         this.subcode = subcode;
         this.subteacher = subteacher;
         this.subtime = subtime;
         this.otp = otp;
+        this.presentcnt = presentcnt;
     }
 }
