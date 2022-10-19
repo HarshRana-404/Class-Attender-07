@@ -101,30 +101,27 @@ public class VerifyOTP extends BottomSheetDialog{
                                                     dbRef.child(subDay).child("slot"+1).child("presence").child("std1").child("stdname").setValue(usrName);
                                                     dbRef.child(subDay).child("slot"+1).child("presence").child("std1").child("stdenr").setValue(usrEnr);
                                                     dbRef.child(subDay).child("slot"+1).child("presentcnt").setValue(1);
+                                                    Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
                                                 }else{
                                                     Boolean marked=false;
-                                                    FbStdData fbStdData= snapshot.child("slot"+1).child("presence").child("std"+1).getValue(FbStdData.class);
-                                                    if(usrEnr.equals(String.valueOf(fbStdData.stdenr))){
-                                                        Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
-                                                        marked = true;
-                                                    }
-                                                    int s=2;
-                                                    while (fbStdData!=null){
-                                                        fbStdData= snapshot.child("slot"+1).child("presence").child("std"+s).getValue(FbStdData.class);
-                                                        if(usrEnr.equals(String.valueOf(fbStdData.stdenr))){
-                                                            Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
+                                                    int cnt = 1;
+                                                    while(cnt!=fbData.presentcnt+1){
+                                                        FbStdData fbStdData= snapshot.child("slot"+cnt).child("presence").child("std"+1).getValue(FbStdData.class);
+                                                        if(fbStdData.stdenr.equals(usrEnr)){
                                                             marked = true;
                                                         }
-                                                        s++;
+                                                        cnt++;
                                                     }
                                                     if(!marked){
                                                         int n = fbData.presentcnt+1;
                                                         dbRef.child(subDay).child("slot"+1).child("presence").child("std"+n).child("stdname").setValue(usrName);
                                                         dbRef.child(subDay).child("slot"+1).child("presence").child("std"+n).child("stdenr").setValue(usrEnr);
                                                         dbRef.child(subDay).child("slot"+1).child("presentcnt").setValue(n);
+                                                        Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
+                                                    }else{
+                                                        Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
-                                                Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
                                             }else{
                                                 Toast.makeText(context, "Wrong OTP!", Toast.LENGTH_SHORT).show();
                                             }
@@ -140,30 +137,27 @@ public class VerifyOTP extends BottomSheetDialog{
                                                         dbRef.child(subDay).child("slot"+i).child("presence").child("std1").child("stdname").setValue(usrName);
                                                         dbRef.child(subDay).child("slot"+i).child("presence").child("std1").child("stdenr").setValue(usrEnr);
                                                         dbRef.child(subDay).child("slot"+i).child("presentcnt").setValue(1);
+                                                        Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
                                                     }else{
                                                         Boolean marked=false;
-                                                        FbStdData fbStdData= snapshot.child("slot"+i).child("presence").child("std"+1).getValue(FbStdData.class);
-                                                        if(usrEnr.equals(String.valueOf(fbStdData.stdenr))){
-                                                            Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
-                                                            marked = true;
-                                                        }
-                                                        int s=2;
-                                                        while (fbStdData!=null){
-                                                            fbStdData= snapshot.child("slot"+i).child("presence").child("std"+s).getValue(FbStdData.class);
-                                                            if(usrEnr.equals(String.valueOf(fbStdData.stdenr))){
-                                                                Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
+                                                        int cnt = 1;
+                                                        while(cnt!=fbData.presentcnt+1){
+                                                            FbStdData fbStdData= snapshot.child("slot"+i).child("presence").child("std"+cnt).getValue(FbStdData.class);
+                                                            if(fbStdData.stdenr.equals(usrEnr)){
                                                                 marked = true;
                                                             }
-                                                            s++;
+                                                            cnt++;
                                                         }
                                                         if(!marked){
                                                             int n = fbData.presentcnt+1;
-                                                            dbRef.child(subDay).child("slot"+1).child("presence").child("std"+n).child("stdname").setValue(usrName);
-                                                            dbRef.child(subDay).child("slot"+1).child("presence").child("std"+n).child("stdenr").setValue(usrEnr);
-                                                            dbRef.child(subDay).child("slot"+1).child("presentcnt").setValue(n);
+                                                            dbRef.child(subDay).child("slot"+i).child("presence").child("std"+n).child("stdname").setValue(usrName);
+                                                            dbRef.child(subDay).child("slot"+i).child("presence").child("std"+n).child("stdenr").setValue(usrEnr);
+                                                            dbRef.child(subDay).child("slot"+i).child("presentcnt").setValue(n);
+                                                            Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
+                                                        }else{
+                                                            Toast.makeText(context, "Attendance already marked!", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
-                                                    Toast.makeText(context, "OTP Verified!", Toast.LENGTH_SHORT).show();
                                                 }else{
                                                     Toast.makeText(context, "Wrong OTP!", Toast.LENGTH_SHORT).show();
                                                 }

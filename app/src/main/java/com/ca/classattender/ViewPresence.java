@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,9 @@ public class ViewPresence extends AppCompatActivity {
     ListView lvPresence;
     DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     ArrayList<String> alPresence = new ArrayList<>();
-    String slotNo="", subDay="";
+    String slotNo="", subDay="", subTitle="";
+    int stdCnt=0;
+    TextView tvSubjectDetails;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -32,18 +35,23 @@ public class ViewPresence extends AppCompatActivity {
         setContentView(R.layout.activity_view_presence);
 
         lvPresence = findViewById(R.id.lv_presence);
-
+        tvSubjectDetails = findViewById(R.id.tv_sub_details);
+        Bundle bl = getIntent().getExtras();
+        slotNo = bl.getString("slotno");
+        subDay = bl.getString("subday");
+        subTitle = bl.getString("subtitle");
+        tvSubjectDetails.setText(subTitle);
         try {
-            Bundle bl = getIntent().getExtras();
-            slotNo = bl.getString("slotno");
-            subDay = bl.getString("subday");
-
             dbRefIT.child(subDay).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     FbData fbData = snapshot.child(slotNo).getValue(FbData.class);
+                    stdCnt = fbData.presentcnt;
                     if(fbData.presentcnt>0){
                         loadAttendance();
+                    }else{
+                        alPresence.add("No Attendance!");
+                        lvPresence.setAdapter(new ArrayAdapter<>(ViewPresence.this, android.R.layout.simple_list_item_1, alPresence));
                     }
                 }
                 @Override
@@ -58,26 +66,17 @@ public class ViewPresence extends AppCompatActivity {
             dbRefIT.child(subDay).child(slotNo).child("presence").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    FbStdData fbStdData = snapshot.child("std"+1).getValue(FbStdData.class);
-                    alPresence.add(fbStdData.stdenr+", "+fbStdData.stdname);
-                    int s=2;
-                    while(fbStdData!=null){
-                        fbStdData= snapshot.child("std"+s).getValue(FbStdData.class);
+                    int cnt = 1;
+                    while(cnt!=stdCnt+1){
+                        FbStdData fbStdData= snapshot.child("std"+cnt).getValue(FbStdData.class);
                         alPresence.add(fbStdData.stdenr+", "+fbStdData.stdname);
-                        s++;
+                        cnt++;
                     }
+                    lvPresence.setAdapter(new ArrayAdapter<>(ViewPresence.this, android.R.layout.simple_list_item_1, alPresence));
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
             });
         } catch (Exception e) {}
-        finally {
-            Toast.makeText(this, alPresence.size()+"", Toast.LENGTH_SHORT).show();
-            if(alPresence.size()>0){
-                lvPresence.setAdapter(new ArrayAdapter<String>(ViewPresence.this, android.R.layout.simple_list_item_1, alPresence));
-            }else{
-                alPresence.add("No Attendance!");
-            }
-        }
     }
 }

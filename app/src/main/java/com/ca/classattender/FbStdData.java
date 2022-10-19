@@ -1,8 +1,8 @@
 package com.ca.classattender;
 
 public class FbStdData {
-    public String stdname;
-    public String stdenr;
+    public String stdname="";
+    public String stdenr="";
 
     public FbStdData(){
 

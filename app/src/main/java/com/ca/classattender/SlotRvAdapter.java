@@ -37,6 +37,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
     HashMap<String, String> hmDay= new HashMap<>();
     String subDayFull="", otpGen="";
     DatabaseReference dbRefIT = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
+    int n = 0;
 
 
     public SlotRvAdapter(Context context, ArrayList<SlotModel> slotList){
@@ -99,6 +100,8 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                                 Intent inViewPresence = new Intent(context, ViewPresence.class);
                                                 inViewPresence.putExtra("slotno", "slot"+1);
                                                 inViewPresence.putExtra("subday", slotList.get(position).subDay);
+                                                String title = slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull;
+                                                inViewPresence.putExtra("subtitle", title);
                                                 context.startActivity(inViewPresence);
                                             }
                                         });
@@ -107,9 +110,10 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                         otpIsNeeded();
                                     }
                                 }
-                                int i = 2;
+                                int sn = 2;
                                 while (fbData != null){
-                                    fbData = snapshot.child("slot"+i).getValue(FbData.class);
+                                    n = sn;
+                                    fbData = snapshot.child("slot"+sn).getValue(FbData.class);
                                     if(fbData.subject.toUpperCase().equals(slotList.get(position).subName) && fbData.subteacher.toUpperCase().equals(slotList.get(position).subTeacher) && fbData.subtime.toUpperCase().equals(slotList.get(position).slotTime)){
                                         otpGen = fbData.otp;
                                         if(!otpGen.equals("")){
@@ -125,12 +129,15 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                                     context.startActivity(inFUllScreenOTP);
                                                 }
                                             });
+                                            int finalSn = sn;
                                             adb.setNeutralButton("VIEW PRESENCE", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     Intent inViewPresence = new Intent(context, ViewPresence.class);
-                                                    inViewPresence.putExtra("slotno", "slot"+i);
+                                                    inViewPresence.putExtra("slotno", "slot"+ finalSn);
                                                     inViewPresence.putExtra("subday", slotList.get(position).subDay);
+                                                    String title = slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull;
+                                                    inViewPresence.putExtra("subtitle", title);
                                                     context.startActivity(inViewPresence);
                                                 }
                                             });
@@ -139,7 +146,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                             otpIsNeeded();
                                         }
                                     }
-                                    i++;
+                                    sn++;
                                 }
                             } catch (Exception e) {
 
