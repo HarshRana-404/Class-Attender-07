@@ -2,15 +2,22 @@ package com.ca.classattender;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,9 +38,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class ViewPresence extends AppCompatActivity {
@@ -47,6 +54,7 @@ public class ViewPresence extends AppCompatActivity {
     TextView tvSubjectDetails;
     String fileSubject="", fileSubTeacher="", fileSubTime="", fileSubDay="", fileDate="";
     HashMap<String, String> hmDay= new HashMap<>();
+    ProgressDialog pd;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -81,6 +89,10 @@ public class ViewPresence extends AppCompatActivity {
                         fileSubject = fbData.subject;
                         fileSubTeacher = fbData.subteacher;
                         fileSubTime = fbData.subtime;
+                        pd = new ProgressDialog(ViewPresence.this, R.style.CustomProgressDialog);
+                        pd.setMessage("Loading Attendance");
+                        pd.setCancelable(false);
+                        pd.show();
                         loadAttendance();
                     }else{
                         alPresence.add("No Attendance!");
@@ -99,8 +111,7 @@ public class ViewPresence extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try{
-                    int WRITE_EXTERNAL_PERMISSION = ActivityCompat.checkSelfPermission(ViewPresence.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if(WRITE_EXTERNAL_PERMISSION==0){
+                    if(checkExternalPermission()){
                         if(alPresence.size()>0){
                             HSSFWorkbook workbook = new HSSFWorkbook();
                             HSSFSheet sheet = workbook.createSheet();
@@ -110,19 +121,24 @@ public class ViewPresence extends AppCompatActivity {
                             row = sheet.createRow(1);
                             cell = row.createCell(0);
                             cell.setCellValue("Student Count: "+alPresence.size());
+                            row = sheet.createRow(2);
+                            cell = row.createCell(0);
+                            cell.setCellValue("Enrollment");
+                            cell = row.createCell(1);
+                            cell.setCellValue("Name");
                             for(int i=0;i<alPresence.size();i++){
                                 String[] stdDet = alPresence.get(i).split(", ");
-                                row = sheet.createRow(i+2);
+                                row = sheet.createRow(i+3);
                                 cell = row.createCell(0);
                                 cell.setCellValue(stdDet[0]);
                                 cell = row.createCell(1);
                                 cell.setCellValue(stdDet[1]);
                             }
                             Calendar cl = Calendar.getInstance();
-                            Date d = cl.getTime();
-                            fileDate = d.getDay()+"-"+d.getMonth()+"-"+d.getYear();
-                            String fileName = fileDate+" "+fileSubDay+" "+fileSubject+" "+fileSubTeacher+" "+fileSubTime;
-                            File exFile = new File(Environment.getExternalStorageDirectory()+"/excel.xls");
+                            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            fileDate = sdf.format(cl.getTime());
+                            String fileName = fileDate+" "+fileSubject+" "+fileSubTeacher;
+                            File exFile = new File(Environment.getExternalStorageDirectory()+"/"+fileName+".xls");
                             if(!exFile.exists()){
                                 exFile.createNewFile();
                             }
@@ -134,7 +150,28 @@ public class ViewPresence extends AppCompatActivity {
                         }
                     }else{
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            AlertDialog.Builder adb = new AlertDialog.Builder(ViewPresence.this);
+                            adb.setTitle("Requesting Permission");
+                            adb.setMessage("Please allow access of 'All files access' in order to export the Excel File.");
+                            adb.setCancelable(true);
+//                            DialogInterface di = adb.create();
+//                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent inManageFiles = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                                    startActivity(inManageFiles);
+                                    Toast.makeText(ViewPresence.this, "Select Class Attender>Allow access to all files", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(ViewPresence.this, "We are unable to export Excel file on your device", Toast.LENGTH_SHORT).show();
+                                    dialogInterface.cancel();
+                                }
+                            });
+                            adb.show();
                         }
                     }
                 } catch (Exception e) {
@@ -156,10 +193,19 @@ public class ViewPresence extends AppCompatActivity {
                         cnt++;
                     }
                     lvPresence.setAdapter(new ArrayAdapter<>(ViewPresence.this, android.R.layout.simple_list_item_1, alPresence));
+                    pd.dismiss();
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
             });
         } catch (Exception e) {}
+    }
+    public boolean checkExternalPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            return Environment.isExternalStorageManager();
+        }else{
+            int n = ContextCompat.checkSelfPermission(ViewPresence.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return n == PackageManager.PERMISSION_GRANTED;
+        }
     }
 }

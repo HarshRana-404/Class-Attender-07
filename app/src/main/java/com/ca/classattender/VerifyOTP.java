@@ -96,7 +96,6 @@ public class VerifyOTP extends BottomSheetDialog{
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     try {
                                         FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
-
                                         String dbOTPExp = fbData.otpexp;
                                         Calendar curCl = Calendar.getInstance();
                                         Calendar dbCl = Calendar.getInstance();
@@ -119,8 +118,8 @@ public class VerifyOTP extends BottomSheetDialog{
                                             String dbOTP;
                                             dbOTP = fbData.otp;
                                             if(dbOTP.equals(otp)){
-                                                if(curHr <= dbHr) {
-                                                    if (curMn <= dbMn) {
+                                                if(true) {
+                                                    if (true) {
                                                         if(fbData.presentcnt == 0){
                                                             dbRef.child(subDay).child("slot"+1).child("presence").child("std1").child("stdname").setValue(usrName);
                                                             dbRef.child(subDay).child("slot"+1).child("presence").child("std1").child("stdenr").setValue(usrEnr);
@@ -130,7 +129,14 @@ public class VerifyOTP extends BottomSheetDialog{
                                                         }else{
                                                             Boolean marked=false;
                                                             int cnt = 1;
-                                                            while(cnt!=fbData.presentcnt+1){
+                                                            int tigada=1;
+                                                            if(fbData.presentcnt>=2){
+                                                                tigada=0;
+                                                            }
+                                                            else{
+                                                                tigada=1;
+                                                            }
+                                                            while(cnt!=fbData.presentcnt+tigada){
                                                                 FbStdData fbStdData= snapshot.child("slot"+cnt).child("presence").child("std"+1).getValue(FbStdData.class);
                                                                 if(fbStdData.stdenr.equals(usrEnr)){
                                                                     marked = true;
@@ -170,8 +176,8 @@ public class VerifyOTP extends BottomSheetDialog{
                                                 String dbOTP;
                                                 dbOTP = fbData.otp;
                                                 if(dbOTP.equals(otp)){
-                                                    if(curHr <= dbHr) {
-                                                        if (curMn <= dbMn) {
+                                                    if(true) {
+                                                        if (true) {
                                                             if(fbData.presentcnt == 0){
                                                                 dbRef.child(subDay).child("slot"+i).child("presence").child("std1").child("stdname").setValue(usrName);
                                                                 dbRef.child(subDay).child("slot"+i).child("presence").child("std1").child("stdenr").setValue(usrEnr);
@@ -181,7 +187,14 @@ public class VerifyOTP extends BottomSheetDialog{
                                                             }else{
                                                                 Boolean marked=false;
                                                                 int cnt = 1;
-                                                                while(cnt!=fbData.presentcnt+1){
+                                                                int tigada=1;
+                                                                if(fbData.presentcnt>=2){
+                                                                    tigada=0;
+                                                                }
+                                                                else{
+                                                                    tigada=1;
+                                                                }
+                                                                while(cnt!=fbData.presentcnt+tigada){
                                                                     FbStdData fbStdData= snapshot.child("slot"+i).child("presence").child("std"+cnt).getValue(FbStdData.class);
                                                                     if(fbStdData.stdenr.equals(usrEnr)){
                                                                         marked = true;
@@ -215,13 +228,14 @@ public class VerifyOTP extends BottomSheetDialog{
                                             i++;
                                         }
                                     } catch (Exception e) {
+//                                        Toast.makeText(context, e.toString(),  Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {}
                             });
                         } catch (Exception e) {
-                            Toast.makeText(context, e.toString(),  Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, e.toString(),  Toast.LENGTH_SHORT).show();
                         }
                     }else{
                         Toast.makeText(context, "Enter OTP!", Toast.LENGTH_SHORT).show();
@@ -229,7 +243,7 @@ public class VerifyOTP extends BottomSheetDialog{
                 }
             });
         } catch (Exception e) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
