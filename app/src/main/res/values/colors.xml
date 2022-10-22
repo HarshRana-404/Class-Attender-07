@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="gray">#ABABAB</color>
+    <color name="ripple_color">#46A0FF</color>
     <color name="theme_1">#007af9</color>
 </resources>

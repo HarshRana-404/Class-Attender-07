@@ -22,13 +22,12 @@
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/toolbar"
-                    >
+                    android:id="@+id/toolbar">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Class Attender"
+                        android:text="@string/app_name"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:textSize="20sp"/>
@@ -37,56 +36,116 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/app_bar"
                 android:layout_margin="10dp"
                 android:orientation="vertical">
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Monday" />
+                <LinearLayout
+                    android:id="@+id/ll_monday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_monday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Monday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_monday_slots"
                     style="@style/MyRecyclerView"/>
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Tuesday" />
+                <LinearLayout
+                    android:id="@+id/ll_tuesday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_tuesday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Tuesday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_tuesday_slots"
                     style="@style/MyRecyclerView"/>
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Wednesday" />
+                <LinearLayout
+                    android:id="@+id/ll_wednesday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_wednesday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Wednesday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_wednesday_slots"
                     style="@style/MyRecyclerView"/>
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Thursday" />
+                <LinearLayout
+                    android:id="@+id/ll_thursday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_thursday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Thursday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_thursday_slots"
                     style="@style/MyRecyclerView"/>
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Friday" />
+                <LinearLayout
+                    android:id="@+id/ll_friday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_friday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Friday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_friday_slots"
                     style="@style/MyRecyclerView"/>
 
-                <TextView
-                    style="@style/DaysTextView"
-                    android:text="Saturday" />
+                <LinearLayout
+                    android:id="@+id/ll_saturday"
+                    style="@style/DaysLinearLayout">
+
+                    <ImageView
+                        android:id="@+id/iv_saturday"
+                        style="@style/DaysImageView"/>
+
+                    <TextView
+                        style="@style/DaysTextView"
+                        android:text="Saturday" />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_saturday_slots"

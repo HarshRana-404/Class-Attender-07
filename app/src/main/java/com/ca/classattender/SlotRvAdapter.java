@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +75,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                     pos = position;
 
                     dbRefIT.child(slotList.get(position).subDay).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @SuppressLint("MissingInflatedId")
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             try {
@@ -107,7 +109,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                         });
                                         adb.show();
                                     }else{
-                                        otpIsNeeded();
+                                        otpIsNeeded(position);
                                     }
                                 }
                                 int sn = 2;
@@ -118,9 +120,11 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                         otpGen = fbData.otp;
                                         if(!otpGen.equals("")){
                                             AlertDialog.Builder adb = new AlertDialog.Builder(context);
+
                                             adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
                                             adb.setCancelable(true);
                                             adb.setMessage("OTP: "+otpGen);
+
                                             adb.setPositiveButton("VIEW IN FULLSCREEN", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -143,7 +147,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                             });
                                             adb.show();
                                         }else{
-                                            otpIsNeeded();
+                                            otpIsNeeded(position);
                                         }
                                     }
                                     sn++;
@@ -163,19 +167,58 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
         }
     }
     
-    public void otpIsNeeded(){
+    @SuppressLint("MissingInflatedId")
+    public void otpIsNeeded(int position){
+        TextView tvSubName, tvSubCode, tvSubTime, tvSubTeacher;
+        Button cancelBtn, generateOtpBtn;
+        ImageView ivSlotTemplate;
+
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
-        adb.setTitle(slotList.get(pos).subName+" - " + slotList.get(pos).slotTime+" on "+subDayFull);
+        View customDialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialog, (ViewGroup) null);
+        adb.setView(customDialogView);
         adb.setCancelable(true);
-        adb.setMessage("");
-        adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+        AlertDialog alertDialog = adb.create();
+
+        tvSubName = customDialogView.findViewById(R.id.tv_sub_name_dialog);
+        tvSubCode = customDialogView.findViewById(R.id.tv_sub_code_dialog);
+        tvSubTime = customDialogView.findViewById(R.id.tv_slot_time_dialog);
+        tvSubTeacher = customDialogView.findViewById(R.id.tv_sub_teacher_dialog);
+        ivSlotTemplate = customDialogView.findViewById(R.id.iv_slot_template_dialog);
+        cancelBtn = customDialogView.findViewById(R.id.cancel_btn);
+        generateOtpBtn = customDialogView.findViewById(R.id.generate_otp_btn);
+
+        tvSubName.setText(slotList.get(position).subName);
+        tvSubCode.setText(slotList.get(position).subCode);
+        tvSubTime.setText(slotList.get(position).slotTime);
+        tvSubTeacher.setText(slotList.get(position).subTeacher);
+        ivSlotTemplate.setBackgroundResource(slotList.get(position).slotTemplate);
+
+//        adb.setTitle(slotList.get(pos).subName+" - " + slotList.get(pos).slotTime+" on "+subDayFull);
+//        adb.setCancelable(true);
+//        adb.setMessage("");
+//        adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                GenerateOTP go = new GenerateOTP(context);
+//                go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
+//            }
+//        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                GenerateOTP go = new GenerateOTP(context);
-                go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
+            public void onClick(View view) {
+                alertDialog.dismiss();
             }
         });
-        adb.show();
+
+        generateOtpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GenerateOTP go = new GenerateOTP(context);
+                go.generateNewOTP(slotList.get(position).subDay, slotList.get(position).subName, slotList.get(position).slotTime, slotList.get(position).subTeacher);
+            }
+        });
+        alertDialog.show();
     }
 
     @Override

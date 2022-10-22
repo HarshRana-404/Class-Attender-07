@@ -11,15 +11,19 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -35,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddTime;
     TextView tvShowTime, tvError;
     Spinner spDay, spSubject;
-    int positionOfSubject=0, positionOfDay=0, index=0;
+    int positionOfSubject=0, positionOfDay=0, index=0, slotNums=0, indexOfTvDays=0;
     String sub="", strTime="", subTeacherShortName="", subCode="", dayOfWeek = "";
     RecyclerView rvDaysSlots[] = new RecyclerView[6];
     ArrayList<ArrayList<SlotModel>> slotList = new ArrayList<>();
@@ -55,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fbAuth = FirebaseAuth.getInstance();
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
-    ProgressDialog pd;
-    int slotNums=0;
+    ProgressDialog progressDialog;
+    LinearLayout llWeekDays[] = new LinearLayout[6];
+    ImageView ivWeekDays[] = new ImageView[6];
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -72,6 +78,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         fabAddSlot = findViewById(R.id.fab_add_slot);
+
+        llWeekDays[0] = findViewById(R.id.ll_monday);
+        llWeekDays[1] = findViewById(R.id.ll_tuesday);
+        llWeekDays[2] = findViewById(R.id.ll_wednesday);
+        llWeekDays[3] = findViewById(R.id.ll_thursday);
+        llWeekDays[4] = findViewById(R.id.ll_friday);
+        llWeekDays[5] = findViewById(R.id.ll_saturday);
+
+        ivWeekDays[0] = findViewById(R.id.iv_monday);
+        ivWeekDays[1] = findViewById(R.id.iv_tuesday);
+        ivWeekDays[2] = findViewById(R.id.iv_wednesday);
+        ivWeekDays[3] = findViewById(R.id.iv_thursday);
+        ivWeekDays[4] = findViewById(R.id.iv_friday);
+        ivWeekDays[5] = findViewById(R.id.iv_saturday);
+
         rvDaysSlots[0] = findViewById(R.id.rv_monday_slots);
         rvDaysSlots[1] = findViewById(R.id.rv_tuesday_slots);
         rvDaysSlots[2] = findViewById(R.id.rv_wednesday_slots);
@@ -101,13 +122,17 @@ public class MainActivity extends AppCompatActivity {
         slotDaysList.add("fri");
         slotDaysList.add("sat");
 
-        pd = new ProgressDialog(MainActivity.this, R.style.CustomProgressDialog);
-        pd.setMessage("Loading Slots");
-        pd.setCancelable(false);
-        pd.show();
-        pd.setContentView(R.layout.progress_dialog_layout);
+        // Showing Progress Dialog
+        progressDialog = new ProgressDialog(MainActivity.this, R.style.CustomProgressDialog);
+        View v = LayoutInflater.from(MainActivity.this).inflate(R.layout.progress_dialog_layout, (ViewGroup) findViewById(R.id.progress_root_layout));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        progressDialog.setContentView(v);
+
         getSubjectTeacherShortName();
         getAllSlots(6);
+
+        // Setting LayoutManager and Adapters to RecyclerViews
         try {
             for (int i=0; i<6; i++){
                 rvDaysSlots[i].setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
@@ -118,6 +143,21 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
+
+        try {
+            // Only Current Day's Slots are visible
+            for (int i=0; i<6; i++){
+                rvDaysSlots[i].setVisibility(View.GONE);
+                rvDaysSlots[i].animate().translationX(500.0f).setDuration(300);
+            }
+            int indexOfWeekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            rvDaysSlots[(indexOfWeekDay-2)%6].setVisibility(View.VISIBLE);
+            rvDaysSlots[(indexOfWeekDay-2)%6].animate().translationX(0.0f).setDuration(300);
+            ivWeekDays[(indexOfWeekDay-2)%6].animate().rotation(90.0f);
+        } catch (Exception e) {}
+
+        // Making all days collapsable and expandable
+        llWeekDaysOnClickListeners();
 
         fabAddSlot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 btnAddTime.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        TimePickerDialog tpd = new TimePickerDialog(
+                        TimePickerDialog tprogressDialog = new TimePickerDialog(
                                 MainActivity.this, R.style.MyTimePickerDialog,
                                 new TimePickerDialog.OnTimeSetListener() {
                                     @SuppressLint("SetTextI18n")
@@ -186,12 +226,76 @@ public class MainActivity extends AppCompatActivity {
                                         tvShowTime.setText("Time: "+strTime);
                                     }
                                 }, 10, 30, true);
-                        tpd.show();
+                        tprogressDialog.show();
                     }
                 });
             }
         });
     }
+
+    private void llWeekDaysOnClickListeners() {
+        llWeekDays[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(0);
+            }
+        });
+
+        llWeekDays[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(1);
+            }
+        });
+
+        llWeekDays[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(2);
+            }
+        });
+
+        llWeekDays[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(3);
+            }
+        });
+
+        llWeekDays[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(4);
+            }
+        });
+
+        llWeekDays[5].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(5);
+            }
+        });
+    }
+
+    private void collapseExpandRv(int i) {
+        Animation translateRv = AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_days_rv);
+        if (rvDaysSlots[i].getVisibility() == View.VISIBLE){
+            ivWeekDays[i].animate().rotation(0.0f);
+            rvDaysSlots[i].animate().translationX(500.0f).scaleX(0.2f).scaleY(0.2f).setDuration(300);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rvDaysSlots[i].setVisibility(View.GONE);
+                }
+            }, 300);
+        }else {
+            rvDaysSlots[i].setVisibility(View.VISIBLE);
+//            rvDaysSlots[i].startAnimation(translateRv);
+            rvDaysSlots[i].animate().translationX(0.0f).scaleX(1).scaleY(1).setDuration(300);
+            ivWeekDays[i].animate().rotation(90.0f);
+        }
+    }
+
     public void getSubjectTeacherShortName(){
         String tName = fbAuth.getCurrentUser().getEmail().toString();
         if(tName.startsWith("mahendra")){
@@ -581,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
                             
                         }
                         finally {
-                            pd.hide();
+                            progressDialog.hide();
                         }
                     }
                     @Override
