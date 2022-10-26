@@ -129,15 +129,8 @@ public class VerifyOTP extends BottomSheetDialog{
                                                         }else{
                                                             Boolean marked=false;
                                                             int cnt = 1;
-                                                            int tigada=1;
-                                                            if(fbData.presentcnt>=2){
-                                                                tigada=0;
-                                                            }
-                                                            else{
-                                                                tigada=1;
-                                                            }
-                                                            while(cnt!=fbData.presentcnt+tigada){
-                                                                FbStdData fbStdData= snapshot.child("slot"+cnt).child("presence").child("std"+1).getValue(FbStdData.class);
+                                                            while(cnt!=fbData.presentcnt+1){
+                                                                FbStdData fbStdData= snapshot.child("slot"+1).child("presence").child("std"+cnt).getValue(FbStdData.class);
                                                                 if(fbStdData.stdenr.equals(usrEnr)){
                                                                     marked = true;
                                                                 }
@@ -187,14 +180,7 @@ public class VerifyOTP extends BottomSheetDialog{
                                                             }else{
                                                                 Boolean marked=false;
                                                                 int cnt = 1;
-                                                                int tigada=1;
-                                                                if(fbData.presentcnt>=2){
-                                                                    tigada=0;
-                                                                }
-                                                                else{
-                                                                    tigada=1;
-                                                                }
-                                                                while(cnt!=fbData.presentcnt+tigada){
+                                                                while(cnt!=fbData.presentcnt+1){
                                                                     FbStdData fbStdData= snapshot.child("slot"+i).child("presence").child("std"+cnt).getValue(FbStdData.class);
                                                                     if(fbStdData.stdenr.equals(usrEnr)){
                                                                         marked = true;

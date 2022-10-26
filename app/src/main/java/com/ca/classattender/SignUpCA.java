@@ -61,6 +61,7 @@ public class SignUpCA extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignUpCA.this, LoginCA.class));
+                finish();
             }
         });
 

@@ -41,6 +41,8 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class ViewPresence extends AppCompatActivity {
@@ -192,6 +194,7 @@ public class ViewPresence extends AppCompatActivity {
                         alPresence.add(fbStdData.stdenr+", "+fbStdData.stdname);
                         cnt++;
                     }
+                    Collections.sort(alPresence);
                     lvPresence.setAdapter(new ArrayAdapter<>(ViewPresence.this, android.R.layout.simple_list_item_1, alPresence));
                     pd.dismiss();
                 }
