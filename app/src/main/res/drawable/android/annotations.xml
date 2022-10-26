@@ -1,0 +1,8 @@
+<root>
+    <item name='android.R.color transparent'>
+        <annotation name='org.jetbrains.annotations.Range'>
+            <val name="from" val="0" />
+            <val name="to" val="1" />
+        </annotation>
+    </item>
+</root>
