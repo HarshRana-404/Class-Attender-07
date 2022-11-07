@@ -12,13 +12,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class StudentCA extends AppCompatActivity {
@@ -52,6 +58,8 @@ public class StudentCA extends AppCompatActivity {
     DatabaseReference dbRefList = FirebaseDatabase.getInstance().getReference("class_attender/otps/it");
     HashMap<String,String> hmSubCode = new HashMap<>();
     ProgressDialog pd;
+    LinearLayout llWeekDays[] = new LinearLayout[6];
+    ImageView ivWeekDays[] = new ImageView[6];
 
 
     @SuppressLint("MissingInflatedId")
@@ -73,6 +81,20 @@ public class StudentCA extends AppCompatActivity {
         slotTemplateImg.add(R.drawable.slot_template_4);
         slotTemplateImg.add(R.drawable.slot_template_5);
         slotTemplateImg.add(R.drawable.slot_template_6);
+
+        llWeekDays[0] = findViewById(R.id.ll_monday);
+        llWeekDays[1] = findViewById(R.id.ll_tuesday);
+        llWeekDays[2] = findViewById(R.id.ll_wednesday);
+        llWeekDays[3] = findViewById(R.id.ll_thursday);
+        llWeekDays[4] = findViewById(R.id.ll_friday);
+        llWeekDays[5] = findViewById(R.id.ll_saturday);
+
+        ivWeekDays[0] = findViewById(R.id.iv_monday);
+        ivWeekDays[1] = findViewById(R.id.iv_tuesday);
+        ivWeekDays[2] = findViewById(R.id.iv_wednesday);
+        ivWeekDays[3] = findViewById(R.id.iv_thursday);
+        ivWeekDays[4] = findViewById(R.id.iv_friday);
+        ivWeekDays[5] = findViewById(R.id.iv_saturday);
 
         hmSubCode.put("ETC", "3130004");
         hmSubCode.put("DBMS", "3130703");
@@ -112,6 +134,20 @@ public class StudentCA extends AppCompatActivity {
         pd.show();
         pd.setContentView(R.layout.progress_dialog_layout);
         getAllSlots();
+
+        try {
+            // Only Current Day's Slots are visible
+            for (int i=0; i<6; i++){
+                rvDaysSlots[i].setVisibility(View.GONE);
+                rvDaysSlots[i].animate().translationX(500.0f).setDuration(300);
+            }
+            int indexOfWeekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            rvDaysSlots[(indexOfWeekDay-2)%6].setVisibility(View.VISIBLE);
+            rvDaysSlots[(indexOfWeekDay-2)%6].animate().translationX(0.0f).setDuration(300);
+            ivWeekDays[(indexOfWeekDay-2)%6].animate().rotation(90.0f);
+        } catch (Exception e) {}
+        // Making all days collapsable and expandable
+        llWeekDaysOnClickListeners();
 
     }
 
@@ -269,5 +305,67 @@ public class StudentCA extends AppCompatActivity {
         startActivity(new Intent(StudentCA.this, LoginCA.class));
         finish();
         return super.onOptionsItemSelected(item);
+    }
+    private void llWeekDaysOnClickListeners() {
+        llWeekDays[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(0);
+            }
+        });
+
+        llWeekDays[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(1);
+            }
+        });
+
+        llWeekDays[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(2);
+            }
+        });
+
+        llWeekDays[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(3);
+            }
+        });
+
+        llWeekDays[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(4);
+            }
+        });
+
+        llWeekDays[5].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseExpandRv(5);
+            }
+        });
+    }
+
+    private void collapseExpandRv(int i) {
+        Animation translateRv = AnimationUtils.loadAnimation(StudentCA.this, R.anim.translate_days_rv);
+        if (rvDaysSlots[i].getVisibility() == View.VISIBLE){
+            ivWeekDays[i].animate().rotation(0.0f);
+            rvDaysSlots[i].animate().translationX(500.0f).scaleX(0.2f).scaleY(0.2f).setDuration(300);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rvDaysSlots[i].setVisibility(View.GONE);
+                }
+            }, 300);
+        }else {
+            rvDaysSlots[i].setVisibility(View.VISIBLE);
+//            rvDaysSlots[i].startAnimation(translateRv);
+            rvDaysSlots[i].animate().translationX(0.0f).scaleX(1).scaleY(1).setDuration(300);
+            ivWeekDays[i].animate().rotation(90.0f);
+        }
     }
 }
