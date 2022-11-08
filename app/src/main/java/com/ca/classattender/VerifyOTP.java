@@ -165,7 +165,6 @@ public class VerifyOTP extends BottomSheetDialog{
                                                 dbOTP = fbData.otp;
                                                 if(dbOTP.equals(otp)){
                                                     SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
-                                                    Toast.makeText(context, curTime+",  "+dbOTPExp, Toast.LENGTH_SHORT).show();
                                                     Date d1 = sdf1.parse(curTime);
                                                     Date d2 = sdf1.parse(dbOTPExp);
                                                     long timeElapsed = d2.getTime()-d1.getTime();

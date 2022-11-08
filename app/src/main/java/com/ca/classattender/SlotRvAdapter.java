@@ -83,7 +83,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                 FbData fbData = snapshot.child("slot"+1).getValue(FbData.class);
                                 if(fbData.subject.toUpperCase().equals(slotList.get(position).subName) && fbData.subteacher.toUpperCase().equals(slotList.get(position).subTeacher) && fbData.subtime.toUpperCase().equals(slotList.get(position).slotTime)){
                                     String otpGen = fbData.otp;
-                                    if(!otpGen.equals("")){
+                                    if(!otpGen.equals("") || fbData.presentcnt>0){
                                         AlertDialog.Builder adb = new AlertDialog.Builder(context);
                                         adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
                                         adb.setCancelable(true);
@@ -118,7 +118,7 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
                                     fbData = snapshot.child("slot"+sn).getValue(FbData.class);
                                     if(fbData.subject.toUpperCase().equals(slotList.get(position).subName) && fbData.subteacher.toUpperCase().equals(slotList.get(position).subTeacher) && fbData.subtime.toUpperCase().equals(slotList.get(position).slotTime)){
                                         otpGen = fbData.otp;
-                                        if(!otpGen.equals("")){
+                                        if(!otpGen.equals("") || fbData.presentcnt>0){
                                             AlertDialog.Builder adb = new AlertDialog.Builder(context);
 
                                             adb.setTitle(slotList.get(position).subName+" - " + slotList.get(position).slotTime+" on "+subDayFull);
@@ -192,17 +192,6 @@ public class SlotRvAdapter extends RecyclerView.Adapter<SlotRvAdapter.ViewHolder
         tvSubTime.setText(slotList.get(position).slotTime);
         tvSubTeacher.setText(slotList.get(position).subTeacher);
         ivSlotTemplate.setBackgroundResource(slotList.get(position).slotTemplate);
-
-//        adb.setTitle(slotList.get(pos).subName+" - " + slotList.get(pos).slotTime+" on "+subDayFull);
-//        adb.setCancelable(true);
-//        adb.setMessage("");
-//        adb.setPositiveButton("GENERATE OTP", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                GenerateOTP go = new GenerateOTP(context);
-//                go.generateNewOTP(slotList.get(pos).subDay, slotList.get(pos).subName, slotList.get(pos).slotTime, slotList.get(pos).subTeacher);
-//            }
-//        });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
