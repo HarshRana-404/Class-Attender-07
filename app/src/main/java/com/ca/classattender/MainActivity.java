@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         Animation translateRv = AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_days_rv);
         if (rvDaysSlots[i].getVisibility() == View.VISIBLE){
             ivWeekDays[i].animate().rotation(0.0f);
-            rvDaysSlots[i].animate().translationX(500.0f).scaleX(0.2f).scaleY(0.2f).setDuration(300);
+            rvDaysSlots[i].animate().translationX(600.0f).setDuration(300);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -291,10 +291,11 @@ public class MainActivity extends AppCompatActivity {
         }else {
             rvDaysSlots[i].setVisibility(View.VISIBLE);
 //            rvDaysSlots[i].startAnimation(translateRv);
-            rvDaysSlots[i].animate().translationX(0.0f).scaleX(1).scaleY(1).setDuration(300);
+            rvDaysSlots[i].animate().translationX(0.0f).setDuration(300);
             ivWeekDays[i].animate().rotation(90.0f);
         }
     }
+
 
     public void getSubjectTeacherShortName(){
         String tName = fbAuth.getCurrentUser().getEmail().toString();
@@ -343,6 +344,10 @@ public class MainActivity extends AppCompatActivity {
                         dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("template").setValue((positionOfSubject-1)%6);
                         dbRefList.child(slotDaysList.get(positionOfDay-1)).child("slot"+slotNums).child("presentcnt").setValue(0);
                         getAllSlots(positionOfDay-1);
+                        if(rvDaysSlots[positionOfDay-1].getVisibility() == View.GONE){
+                            collapseExpandRv(positionOfDay-1);
+                        }
+                        strTime="";
                     }
                 }
                 @Override

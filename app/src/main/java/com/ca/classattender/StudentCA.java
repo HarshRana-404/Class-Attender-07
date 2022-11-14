@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -146,8 +147,12 @@ public class StudentCA extends AppCompatActivity {
             rvDaysSlots[(indexOfWeekDay-2)%6].animate().translationX(0.0f).setDuration(300);
             ivWeekDays[(indexOfWeekDay-2)%6].animate().rotation(90.0f);
         } catch (Exception e) {}
+
         // Making all days collapsable and expandable
         llWeekDaysOnClickListeners();
+
+        // Making all RV Listeners
+        slotAddedListeners();
 
     }
 
@@ -286,6 +291,7 @@ public class StudentCA extends AppCompatActivity {
 
                 }finally {
                     pd.hide();
+                    getSlotCounts();
                 }
             }
             @Override
@@ -349,12 +355,11 @@ public class StudentCA extends AppCompatActivity {
             }
         });
     }
-
     private void collapseExpandRv(int i) {
         Animation translateRv = AnimationUtils.loadAnimation(StudentCA.this, R.anim.translate_days_rv);
         if (rvDaysSlots[i].getVisibility() == View.VISIBLE){
             ivWeekDays[i].animate().rotation(0.0f);
-            rvDaysSlots[i].animate().translationX(500.0f).scaleX(0.2f).scaleY(0.2f).setDuration(300);
+            rvDaysSlots[i].animate().translationX(600.0f).setDuration(300);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -364,8 +369,119 @@ public class StudentCA extends AppCompatActivity {
         }else {
             rvDaysSlots[i].setVisibility(View.VISIBLE);
 //            rvDaysSlots[i].startAnimation(translateRv);
-            rvDaysSlots[i].animate().translationX(0.0f).scaleX(1).scaleY(1).setDuration(300);
+            rvDaysSlots[i].animate().translationX(0.0f).setDuration(300);
             ivWeekDays[i].animate().rotation(90.0f);
         }
     }
+
+    public void slotAddedListeners(){
+        dbRefList.child("mon").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        dbRefList.child("tue").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        dbRefList.child("wed").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        dbRefList.child("thu").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        dbRefList.child("fri").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        dbRefList.child("sat").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                getAllSlots();
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+    public void getSlotCounts(){
+        for(int i=0;i<6;i++){
+            if(slotList.get(i).size()==0){
+                llWeekDays[i].setEnabled(false);
+                ivWeekDays[i].setImageDrawable(getResources().getDrawable(R.drawable.ic_black_right_arrow_disabled));
+            }else{
+                llWeekDays[i].setEnabled(true);
+                ivWeekDays[i].setImageDrawable(getResources().getDrawable(R.drawable.ic_black_right_arrow));
+            }
+        }
+    }
+
 }
